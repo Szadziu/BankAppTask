@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
-const Slider = () => {
+const Slider = (props) => {
   return (
     <Axis>
-      <Point>{"< >"}</Point>
+      <Point position={props.position} onMouseDown={props.move}>
+        {"< >"}
+      </Point>
     </Axis>
   );
 };
@@ -11,6 +13,7 @@ const Slider = () => {
 export default Slider;
 
 const Axis = styled.div`
+  position: relative;
   width: 200px;
   height: 10px;
   margin: 0 auto;
@@ -19,6 +22,9 @@ const Axis = styled.div`
 `;
 
 const Point = styled.div`
+  position: absolute;
+  top: 0;
+  left: ${(props) => props.position}%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,4 +36,7 @@ const Point = styled.div`
   background-color: orange;
   font-weight: bold;
   transform: translate(-50%, calc(-50% + 5px));
+  &:hover {
+    cursor: grab;
+  }
 `;
