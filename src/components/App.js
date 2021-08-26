@@ -8,28 +8,17 @@ class App extends React.Component {
     position: 0,
   };
 
-  moveButton = () => {
-    console.log("przesuwam się");
-  };
-
   render() {
     return (
-      <Main className="App">
-        <Title>Okres</Title>
-        <Slider move={this.moveButton} position={this.state.position} />
-        <Title>Kwota</Title>
-        <Slider />
+      <Main>
+        <Slider min={3} max={120} />
+        <Slider min={500} max={100000} />
       </Main>
     );
   }
 }
 
 export default App;
-
-const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const Title = styled.h1`
   font-size: 32px;

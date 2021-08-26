@@ -1,42 +1,109 @@
 import styled from "styled-components";
+import React from "react";
 
-const Slider = (props) => {
-  return (
-    <Axis>
-      <Point position={props.position} onMouseDown={props.move}>
-        {"< >"}
-      </Point>
-    </Axis>
-  );
-};
+class Slider extends React.Component {
+  state = {
+    position: 0,
+    value: 0,
+  };
+  sliderRef = React.createRef();
+
+  startDrag = (e) => {
+    e.preventDefault();
+    document.addEventListener("mousemove", this.drag);
+    document.addEventListener("mouseup", this.stopDrag);
+  };
+
+  stopDrag = () => {
+    document.removeEventListener("mousemove", this.drag);
+    document.removeEventListener("mouseup", this.stopDrag);
+  };
+
+  progressDrag = (width, mouseX) => {
+    const { max, min } = this.props;
+    const step = (width - 160) / (max - min);
+    const newValue = Math.round((mouseX - 80) / step) + min;
+    this.setState({ value: newValue });
+  };
+
+  drag = (e) => {
+    const slider = this.sliderRef.current;
+    const { left, width } = slider.getBoundingClientRect();
+    const draggableWidth = 160;
+    const mouseX = e.clientX - left;
+
+    const startPosition = mouseX - draggableWidth / 2;
+    if (mouseX - draggableWidth / 2 < 0) {
+      this.setState({ position: 0 });
+      return;
+    }
+    if (mouseX + draggableWidth / 2 > width) {
+      this.setState({ position: width - draggableWidth });
+      return;
+    }
+
+    this.progressDrag(width, mouseX);
+    this.setState({ position: startPosition });
+  };
+
+  render() {
+    return (
+      <MainBar ref={this.sliderRef}>
+        <ProgressBar style={{ width: this.state.position + 20 }}></ProgressBar>
+        <Draggable
+          style={{ left: this.state.position }}
+          onMouseDown={this.startDrag}
+        >
+          {this.state.value}
+        </Draggable>
+      </MainBar>
+    );
+  }
+}
 
 export default Slider;
 
-const Axis = styled.div`
-  position: relative;
-  width: 200px;
-  height: 10px;
-  margin: 0 auto;
-  border: 1px solid black;
-  border-radius: 5px;
+const MainBar = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 10vh;
+  background-color: skyblue;
+  border-radius: 20px;
+  box-shadow: 0 0 1px 1px black;
 `;
 
-const Point = styled.div`
+const Draggable = styled.div`
   position: absolute;
-  top: 0;
-  left: ${(props) => props.position}%;
+  top: -1vh;
+
+  height: 12vh;
+  width: 160px;
+
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 0 2px 3px black;
-  background-color: orange;
-  font-weight: bold;
-  transform: translate(-50%, calc(-50% + 5px));
-  &:hover {
-    cursor: grab;
-  }
+  align-items: center;
+
+  border-radius: 10px;
+  border: 2px solid black;
+
+  font-size: 3rem;
+  font-family: "Arial";
+
+  background: rgb(6, 82, 197);
+  color: white;
+
+  cursor: grab;
+`;
+
+const ProgressBar = styled.div`
+  width: 0;
+  height: 100%;
+
+  border-radius: 20px;
+
+  background: rgb(53, 230, 37);
 `;
