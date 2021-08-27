@@ -12,7 +12,7 @@ class App extends React.Component {
     return (
       <Main>
         <Slider min={3} max={120} />
-        <Slider min={500} max={100000} />
+        {/* <Slider min={500} max={100000} /> */}
       </Main>
     );
   }
@@ -20,6 +20,6 @@ class App extends React.Component {
 
 export default App;
 
-const Title = styled.h1`
+const Main = styled.div`
   font-size: 32px;
 `;

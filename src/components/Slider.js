@@ -48,28 +48,44 @@ class Slider extends React.Component {
 
   render() {
     return (
-      <MainBar ref={this.sliderRef}>
-        <ProgressBar style={{ width: this.state.position + 20 }}></ProgressBar>
-        <Draggable
-          style={{ left: this.state.position }}
-          onMouseDown={this.startDrag}
-        >
-          {this.state.value}
-        </Draggable>
-      </MainBar>
+      <Container>
+        <h4 style={{ textAlign: "center" }}>Okres</h4>
+        <MainBar ref={this.sliderRef}>
+          <ProgressBar
+            style={{ width: this.state.position + 20 }}
+          ></ProgressBar>
+          <Draggable
+            style={{ left: this.state.position }}
+            onMouseDown={this.startDrag}
+          >
+            {this.state.value}
+          </Draggable>
+        </MainBar>
+      </Container>
     );
   }
 }
 
 export default Slider;
 
+const Container = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid orange;
+  border-radius: 20px;
+  width: 50vw;
+  height: 60vh;
+`;
+
 const MainBar = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80vw;
-  height: 10vh;
+  width: 80%;
+  height: 10%;
   background-color: skyblue;
   border-radius: 20px;
   box-shadow: 0 0 1px 1px black;
@@ -79,21 +95,21 @@ const Draggable = styled.div`
   position: absolute;
   top: -1vh;
 
-  height: 12vh;
-  width: 160px;
+  height: 50px;
+  width: 50px;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 
-  border-radius: 10px;
+  border-radius: 50%;
   border: 2px solid black;
 
-  font-size: 3rem;
+  font-size: 2rem;
   font-family: "Arial";
 
-  background: rgb(6, 82, 197);
+  background: orange;
   color: white;
 
   cursor: grab;
