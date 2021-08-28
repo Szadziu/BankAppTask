@@ -4,19 +4,45 @@ import React from "react";
 import Slider from "./Slider";
 
 class App extends React.Component {
+  state = {
+    loanPeriod: 1,
+    loanAmount: 0,
+  };
+
+  handleLoanAmount = (dataValue) => {
+    this.setState({ loanAmount: dataValue });
+  };
+
+  handleLoanPeriod = (dataValue) => {
+    this.setState({ loanPeriod: dataValue });
+  };
   render() {
+    const { loanAmount, loanPeriod } = this.state;
+    const loanInstallment = (loanAmount / loanPeriod).toFixed(2);
     return (
       <>
         <Container>
-          <Slider text={"Okres"} min={3} max={120} />
-          <Slider text={"Kwota"} min={500} max={100000} />
+          <Slider
+            text={"Okres"}
+            handleLoan={this.handleLoanPeriod}
+            min={3}
+            max={120}
+          />
+          <Slider
+            text={"Kwota"}
+            handleLoan={this.handleLoanAmount}
+            min={500}
+            max={100000}
+          />
         </Container>
         <InterestRate>
-          <label for="title">Oprocentowanie</label>
+          <label htmlFor="title">Oprocentowanie</label>
           <input name="title" id="title" type="text" />
           <input type="checkbox" />
           <PercentageSign>%</PercentageSign>
-          <LoanInstallment>Rata kredytu</LoanInstallment>
+          <LoanInstallment>
+            Rata kredytu: {loanInstallment ? loanInstallment : "0"} zł
+          </LoanInstallment>
         </InterestRate>
       </>
     );

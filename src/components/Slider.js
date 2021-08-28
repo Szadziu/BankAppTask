@@ -4,9 +4,13 @@ import React from "react";
 class Slider extends React.Component {
   state = {
     position: 0,
-    value: 0,
+    value: this.props.min,
   };
   sliderRef = React.createRef();
+
+  componentDidMount() {
+    this.props.handleLoan(this.state.value);
+  }
 
   startDrag = (e) => {
     e.preventDefault();
@@ -21,15 +25,17 @@ class Slider extends React.Component {
 
   progressDrag = (width, mouseX) => {
     const { max, min } = this.props;
-    const step = (width - 160) / (max - min);
-    const newValue = Math.round((mouseX - 80) / step) + min;
+    const step = (width - 50) / (max - min);
+    const newValue = Math.round((mouseX - 25) / step) + min;
     this.setState({ value: newValue });
   };
 
   drag = (e) => {
+    this.props.handleLoan(this.state.value);
+
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
-    const draggableWidth = 160;
+    const draggableWidth = 50;
     const mouseX = e.clientX - left;
 
     const startPosition = mouseX - draggableWidth / 2;
