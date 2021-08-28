@@ -32,7 +32,7 @@ class App extends React.Component {
             text={"Kwota"}
             handleLoan={this.handleLoanAmount}
             min={500}
-            max={100000}
+            max={20000}
           />
         </Container>
         <InterestRate>

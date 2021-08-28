@@ -5,6 +5,8 @@ class Slider extends React.Component {
   state = {
     position: 0,
     value: this.props.min,
+    mousePosition: 0,
+    opacityBarWidth: 0,
   };
   sliderRef = React.createRef();
 
@@ -36,6 +38,7 @@ class Slider extends React.Component {
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
     const draggableWidth = 50;
+    console.log(e);
     const mouseX = e.clientX - left;
 
     const startPosition = mouseX - draggableWidth / 2;
@@ -56,16 +59,28 @@ class Slider extends React.Component {
     return (
       <Main>
         <h4 style={{ textAlign: "center" }}>{this.props.text}</h4>
-        <MainBar ref={this.sliderRef}>
+        <MainBar
+          position={this.state.position}
+          ref={this.sliderRef}
+          onClick={(e) => {
+            this.drag(e);
+          }}
+        >
           <ProgressBar
             style={{ width: this.state.position + 20 }}
           ></ProgressBar>
+          <OpacityBar
+            onMouseOver={(e) => {
+              console.log(e.currentTarget.offsetWidth, e.target.offsetWidth);
+              this.setState({
+                opacityBarWidth: 0,
+              });
+            }}
+          ></OpacityBar>
           <Draggable
             style={{ left: this.state.position }}
             onMouseDown={this.startDrag}
-          >
-            {"<>"}
-          </Draggable>
+          ></Draggable>
         </MainBar>
         <Result>{this.state.value}</Result>
       </Main>
@@ -86,7 +101,7 @@ const Result = styled.div`
   display: flex;
   align-items: center;
   padding-left: 10px;
-  top: 50%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
@@ -95,11 +110,25 @@ const Result = styled.div`
   border-radius: 20px;
 `;
 
+const OpacityBar = styled.div`
+  background-color: skyblue;
+  height: 100%;
+`;
+
+const ProgressBar = styled.div`
+  width: 0;
+  height: 100%;
+
+  border-radius: 20px;
+
+  background: rgb(53, 230, 37);
+`;
+
 const MainBar = styled.div`
   position: relative;
   display: flex;
 
-  top: 30%;
+  top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
@@ -107,14 +136,20 @@ const MainBar = styled.div`
   background-color: skyblue;
   border-radius: 20px;
   box-shadow: 0 0 1px 1px black;
+
+  &:hover ${OpacityBar} {
+    width: 150px;
+    background-color: grey;
+    cursor: pointer;
+  }
 `;
 
 const Draggable = styled.div`
   position: absolute;
-  top: -2vh;
+  top: -20px;
 
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
 
   display: flex;
   flex-wrap: wrap;
@@ -131,13 +166,4 @@ const Draggable = styled.div`
   color: white;
 
   cursor: grab;
-`;
-
-const ProgressBar = styled.div`
-  width: 0;
-  height: 100%;
-
-  border-radius: 20px;
-
-  background: rgb(53, 230, 37);
 `;
