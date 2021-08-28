@@ -48,8 +48,8 @@ class Slider extends React.Component {
 
   render() {
     return (
-      <Container>
-        <h4 style={{ textAlign: "center" }}>Okres</h4>
+      <Main>
+        <h4 style={{ textAlign: "center" }}>{this.props.text}</h4>
         <MainBar ref={this.sliderRef}>
           <ProgressBar
             style={{ width: this.state.position + 20 }}
@@ -58,30 +58,42 @@ class Slider extends React.Component {
             style={{ left: this.state.position }}
             onMouseDown={this.startDrag}
           >
-            {this.state.value}
+            {"<>"}
           </Draggable>
         </MainBar>
-      </Container>
+        <Result>{this.state.value}</Result>
+      </Main>
     );
   }
 }
 
 export default Slider;
 
-const Container = styled.div`
-  position: absolute;
+const Main = styled.div`
+  position: relative;
+  width: 100%;
+  height: 50%;
+`;
+
+const Result = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 2px solid orange;
+  width: 80%;
+  height: 15%;
+  background-color: lightgrey;
   border-radius: 20px;
-  width: 50vw;
-  height: 60vh;
 `;
 
 const MainBar = styled.div`
-  position: absolute;
-  top: 50%;
+  position: relative;
+  display: flex;
+
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
@@ -93,7 +105,7 @@ const MainBar = styled.div`
 
 const Draggable = styled.div`
   position: absolute;
-  top: -1vh;
+  top: -2vh;
 
   height: 50px;
   width: 50px;
