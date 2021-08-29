@@ -1,11 +1,10 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useState } from "react";
 
 class Slider extends React.Component {
   state = {
     position: 0,
     value: this.props.min,
-    mousePosition: 0,
     opacityBarWidth: 0,
   };
   sliderRef = React.createRef();
@@ -34,7 +33,6 @@ class Slider extends React.Component {
 
   drag = (e) => {
     this.props.handleLoan(this.state.value);
-
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
     const draggableWidth = 50;
@@ -69,8 +67,10 @@ class Slider extends React.Component {
             const slider = this.sliderRef.current;
             const { left } = slider.getBoundingClientRect();
             const mouseX = e.clientX - left;
+            const clickedPosition = mouseX - this.state.position - 15;
+
             this.setState({
-              opacityBarWidth: mouseX - this.state.position - 15,
+              opacityBarWidth: clickedPosition,
             });
           }}
         >
@@ -83,7 +83,36 @@ class Slider extends React.Component {
             onMouseDown={this.startDrag}
           ></Draggable>
         </MainBar>
-        <Result>{this.state.value}</Result>
+        <Result
+          min={this.props.min}
+          max={this.props.max}
+          handleLoan={this.props.handleLoan}
+          onChange={(e) => {
+            console.log(this.props.handleLoan(this.state.value));
+            if (
+              e.target.value <= this.props.max &&
+              e.target.value >= this.props.min
+            ) {
+              this.setState({
+                value: e.target.value * 1,
+                position:
+                  (((e.target.value * 100) / this.props.max) * 570) / 100,
+              });
+            } else if (e.target.value >= this.props.max) {
+              this.setState({
+                value: this.props.max,
+                position: 570,
+              });
+            } else if (e.target.value <= this.props.min) {
+              this.setState({
+                value: this.props.min,
+                position: 0,
+              });
+            }
+          }}
+          type="number"
+          value={this.state.value}
+        />
       </Main>
     );
   }
@@ -97,7 +126,7 @@ const Main = styled.div`
   height: 50%;
 `;
 
-const Result = styled.div`
+const Result = styled.input`
   position: relative;
   display: flex;
   align-items: center;
@@ -109,6 +138,16 @@ const Result = styled.div`
   height: 15%;
   background-color: lightgrey;
   border-radius: 20px;
+  &:focus {
+    border: 1px solid orange;
+    border-radius: 20px;
+    outline: none;
+  }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 const OpacityBar = styled.div`
@@ -126,6 +165,9 @@ const ProgressBar = styled.div`
   border-radius: 20px;
 
   background: rgb(53, 230, 37);
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const MainBar = styled.div`

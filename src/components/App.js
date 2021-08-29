@@ -34,7 +34,7 @@ class App extends React.Component {
             text={"Kwota"}
             handleLoan={this.handleLoanAmount}
             min={500}
-            max={20000}
+            max={100000}
           />
         </Container>
         <InterestRate>
@@ -100,6 +100,7 @@ export default App;
 const InterestRate = styled.div`
   display: flex;
   position: absolute;
+
   top: 85%;
   left: 30%;
 `;
@@ -117,8 +118,13 @@ const PercentageSign = styled.div`
 
 const LoanInstallment = styled.div`
   background-color: orange;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
   width: 100px;
   height: 100px;
+  border-radius: 20px;
 `;
 
 const Container = styled.div`
