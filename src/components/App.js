@@ -7,7 +7,7 @@ class App extends React.Component {
   state = {
     loanPeriod: 1,
     loanAmount: 0,
-    isChecked: false,
+    isChecked: true,
     interest: 0,
   };
 
@@ -25,12 +25,14 @@ class App extends React.Component {
       <>
         <Container>
           <Slider
+            sign={"M"}
             text={"Okres"}
             handleLoan={this.handleLoanPeriod}
             min={3}
             max={120}
           />
           <Slider
+            sign={"PLN"}
             text={"Kwota"}
             handleLoan={this.handleLoanAmount}
             min={500}
@@ -39,7 +41,7 @@ class App extends React.Component {
         </Container>
         <InterestRate>
           <label htmlFor="title">Oprocentowanie</label>
-          <input
+          <InterestInput
             onChange={(e) => {
               if (e.target.value >= 0) {
                 if (e.target.value > 12) {
@@ -62,15 +64,20 @@ class App extends React.Component {
             disabled={!this.state.isChecked}
             value={this.state.isChecked && this.state.interest}
           />
-          <input
-            onChange={() => {
-              this.setState((prevState) => ({
-                isChecked: !prevState.isChecked,
-              }));
-            }}
-            checked={this.state.isChecked}
-            type="checkbox"
-          />
+          <Checkbox>
+            <InterestCheckbox
+              onChange={() => {
+                this.setState((prevState) => ({
+                  isChecked: !prevState.isChecked,
+                }));
+              }}
+              checked={this.state.isChecked}
+              type="checkbox"
+            />
+            <CheckboxLabel
+              className={this.state.isChecked ? "isChecked" : "isUnchecked"}
+            ></CheckboxLabel>
+          </Checkbox>
           <PercentageSign>%</PercentageSign>
           {this.state.isChecked ? (
             <LoanInstallment>
@@ -96,6 +103,53 @@ class App extends React.Component {
 }
 
 export default App;
+
+const Checkbox = styled.div`
+  width: 40px;
+  height: 10px;
+  background: #555;
+  margin: 20px 80px;
+  position: relative;
+  border-radius: 3px;
+`;
+
+const CheckboxLabel = styled.label`
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  transition: all 0.5s ease;
+  cursor: pointer;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+
+  background: #ccc;
+`;
+
+const InterestCheckbox = styled.input`
+  opacity: 0;
+  cursor: pointer;
+  position: relative;
+  top: -200%;
+  left: -30%;
+  width: 50px;
+  height: 40px;
+  &:checked + label {
+    left: 27px;
+  }
+`;
+
+const InterestInput = styled.input`
+  width: 100px;
+  height: 20px;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;
 
 const InterestRate = styled.div`
   display: flex;

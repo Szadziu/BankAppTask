@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronRight,
+  faChevronLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 class Slider extends React.Component {
   state = {
@@ -55,13 +60,15 @@ class Slider extends React.Component {
   render() {
     return (
       <Main>
-        <h4 style={{ textAlign: "center" }}>{this.props.text}</h4>
+        <p style={{ textAlign: "center" }}>{this.props.text}</p>
         <MainBar
+          handleLoan={this.props.handleLoan}
           width={this.state.opacityBarWidth}
           position={this.state.position}
           ref={this.sliderRef}
           onClick={(e) => {
             this.drag(e);
+            this.props.handleLoan(this.state.value);
           }}
           onMouseMove={(e) => {
             const slider = this.sliderRef.current;
@@ -81,14 +88,16 @@ class Slider extends React.Component {
           <Draggable
             style={{ left: this.state.position }}
             onMouseDown={this.startDrag}
-          ></Draggable>
+          >
+            <FontAwesomeIcon size="xs" icon={faChevronLeft} pull="left" />
+            <FontAwesomeIcon size="xs" icon={faChevronRight} />
+          </Draggable>
         </MainBar>
         <Result
           min={this.props.min}
           max={this.props.max}
           handleLoan={this.props.handleLoan}
           onChange={(e) => {
-            console.log(this.props.handleLoan(this.state.value));
             if (
               e.target.value <= this.props.max &&
               e.target.value >= this.props.min
@@ -113,6 +122,7 @@ class Slider extends React.Component {
           type="number"
           value={this.state.value}
         />
+        <Sign>{this.props.sign}</Sign>
       </Main>
     );
   }
@@ -120,10 +130,26 @@ class Slider extends React.Component {
 
 export default Slider;
 
+const Sign = styled.div`
+  position: absolute;
+  top: 71%;
+  left: 80%;
+  height: 30px;
+  width: auto;
+  padding: 0 10px;
+  text-align: center;
+  line-height: 30px;
+  color: black;
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: grey;
+`;
+
 const Main = styled.div`
   position: relative;
   width: 100%;
   height: 50%;
+  font-size: 24px;
 `;
 
 const Result = styled.input`
@@ -136,8 +162,10 @@ const Result = styled.input`
   transform: translate(-50%, -50%);
   width: 80%;
   height: 15%;
-  background-color: lightgrey;
+  background-color: lightgray;
+  border: none;
   border-radius: 20px;
+  color: white;
   &:focus {
     border: 1px solid orange;
     border-radius: 20px;
@@ -151,7 +179,7 @@ const Result = styled.input`
 `;
 
 const OpacityBar = styled.div`
-  background-color: skyblue;
+  background-color: lightgrey;
   height: 100%;
   width: ${(props) => props.width}px;
   border-radius: 20px;
@@ -164,7 +192,7 @@ const ProgressBar = styled.div`
 
   border-radius: 20px;
 
-  background: rgb(53, 230, 37);
+  background: gray;
   &:hover {
     cursor: pointer;
   }
@@ -179,9 +207,10 @@ const MainBar = styled.div`
   transform: translate(-50%, -50%);
   width: 620px;
   height: 10%;
-  background-color: skyblue;
+  background-color: white;
   border-radius: 20px;
-  box-shadow: 0 0 1px 1px black;
+  box-shadow: 0 0 1px 1px lightgray;
+  padding: 1px;
 
   &:hover ${OpacityBar} {
     width: ${(props) => props.width}px;
@@ -203,7 +232,7 @@ const Draggable = styled.div`
   align-items: center;
 
   border-radius: 50%;
-  border: 2px solid black;
+  box-shadow: 0 0 4px 0 black;
 
   font-size: 2rem;
   font-family: "Arial";
