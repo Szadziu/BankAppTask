@@ -7,6 +7,8 @@ class App extends React.Component {
   state = {
     loanPeriod: 1,
     loanAmount: 0,
+    isChecked: false,
+    interest: 0,
   };
 
   handleLoanAmount = (dataValue) => {
@@ -18,7 +20,7 @@ class App extends React.Component {
   };
   render() {
     const { loanAmount, loanPeriod } = this.state;
-    const loanInstallment = (loanAmount / loanPeriod).toFixed(2);
+    const loanInstallment = Math.round(loanAmount / loanPeriod);
     return (
       <>
         <Container>
@@ -37,12 +39,43 @@ class App extends React.Component {
         </Container>
         <InterestRate>
           <label htmlFor="title">Oprocentowanie</label>
-          <input name="title" id="title" type="text" />
-          <input type="checkbox" />
+          <input
+            onChange={(e) => {
+              this.setState({
+                interest: e.target.value * 1,
+              });
+            }}
+            name="title"
+            id="title"
+            type="text"
+          />
+          <input
+            onChange={() => {
+              this.setState((prevState) => ({
+                isChecked: !prevState.isChecked,
+              }));
+            }}
+            checked={this.state.isChecked}
+            type="checkbox"
+          />
           <PercentageSign>%</PercentageSign>
-          <LoanInstallment>
-            Rata kredytu: {loanInstallment ? loanInstallment : "0"} zł
-          </LoanInstallment>
+          {this.state.isChecked ? (
+            <LoanInstallment>
+              Rata kredytu:{" "}
+              {loanInstallment
+                ? (
+                    loanInstallment +
+                    loanInstallment * (this.state.interest / 100)
+                  ).toFixed(2)
+                : "0"}
+              zł
+            </LoanInstallment>
+          ) : (
+            <LoanInstallment>
+              Rata kredytu: {loanInstallment ? loanInstallment.toFixed(2) : "0"}
+              zł
+            </LoanInstallment>
+          )}
         </InterestRate>
       </>
     );
