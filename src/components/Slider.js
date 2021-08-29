@@ -38,7 +38,6 @@ class Slider extends React.Component {
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
     const draggableWidth = 50;
-    console.log(e);
     const mouseX = e.clientX - left;
 
     const startPosition = mouseX - draggableWidth / 2;
@@ -60,23 +59,25 @@ class Slider extends React.Component {
       <Main>
         <h4 style={{ textAlign: "center" }}>{this.props.text}</h4>
         <MainBar
+          width={this.state.opacityBarWidth}
           position={this.state.position}
           ref={this.sliderRef}
           onClick={(e) => {
             this.drag(e);
           }}
+          onMouseMove={(e) => {
+            const slider = this.sliderRef.current;
+            const { left } = slider.getBoundingClientRect();
+            const mouseX = e.clientX - left;
+            this.setState({
+              opacityBarWidth: mouseX - this.state.position - 15,
+            });
+          }}
         >
           <ProgressBar
             style={{ width: this.state.position + 20 }}
           ></ProgressBar>
-          <OpacityBar
-            onMouseOver={(e) => {
-              console.log(e.currentTarget.offsetWidth, e.target.offsetWidth);
-              this.setState({
-                opacityBarWidth: 0,
-              });
-            }}
-          ></OpacityBar>
+          <OpacityBar width={this.state.opacityBarWidth}></OpacityBar>
           <Draggable
             style={{ left: this.state.position }}
             onMouseDown={this.startDrag}
@@ -113,6 +114,9 @@ const Result = styled.div`
 const OpacityBar = styled.div`
   background-color: skyblue;
   height: 100%;
+  width: ${(props) => props.width}px;
+  border-radius: 20px;
+  opacity: 0.5;
 `;
 
 const ProgressBar = styled.div`
@@ -131,14 +135,14 @@ const MainBar = styled.div`
   top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
+  width: 620px;
   height: 10%;
   background-color: skyblue;
   border-radius: 20px;
   box-shadow: 0 0 1px 1px black;
 
   &:hover ${OpacityBar} {
-    width: 150px;
+    width: ${(props) => props.width}px;
     background-color: grey;
     cursor: pointer;
   }

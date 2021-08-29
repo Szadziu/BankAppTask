@@ -41,13 +41,26 @@ class App extends React.Component {
           <label htmlFor="title">Oprocentowanie</label>
           <input
             onChange={(e) => {
-              this.setState({
-                interest: e.target.value * 1,
-              });
+              if (e.target.value >= 0) {
+                if (e.target.value > 12) {
+                  e.target.value = 12;
+                  this.setState({
+                    interest: 12,
+                  });
+                  return;
+                }
+                this.setState({
+                  interest: e.target.value * 1,
+                });
+              } else {
+                e.target.value = 0;
+              }
             }}
             name="title"
             id="title"
-            type="text"
+            type="number"
+            disabled={!this.state.isChecked}
+            value={this.state.isChecked && this.state.interest}
           />
           <input
             onChange={() => {
