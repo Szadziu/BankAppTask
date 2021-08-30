@@ -11,11 +11,18 @@ class Slider extends React.Component {
     position: 0,
     value: this.props.min,
     opacityBarWidth: 0,
+    opacity: true,
   };
   sliderRef = React.createRef();
 
   componentDidMount() {
     this.props.handleLoan(this.state.value);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.value !== this.state.value) {
+      this.props.handleLoan(this.state.value);
+    }
   }
 
   startDrag = (e) => {
@@ -37,7 +44,7 @@ class Slider extends React.Component {
   };
 
   drag = (e) => {
-    this.props.handleLoan(this.state.value);
+    // this.props.handleLoan(this.state.value);
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
     const draggableWidth = 50;
@@ -68,7 +75,7 @@ class Slider extends React.Component {
           ref={this.sliderRef}
           onClick={(e) => {
             this.drag(e);
-            this.props.handleLoan(this.state.value);
+            this.setState((prevState) => ({ opacity: !prevState.opacity }));
           }}
           onMouseMove={(e) => {
             const slider = this.sliderRef.current;
@@ -78,13 +85,14 @@ class Slider extends React.Component {
 
             this.setState({
               opacityBarWidth: clickedPosition,
+              opacity: true,
             });
           }}
         >
           <ProgressBar
             style={{ width: this.state.position + 20 }}
           ></ProgressBar>
-          <OpacityBar width={this.state.opacityBarWidth}></OpacityBar>
+          {this.state.opacity ? <OpacityBar /> : null}
           <Draggable
             style={{ left: this.state.position }}
             onMouseDown={this.startDrag}
@@ -93,36 +101,38 @@ class Slider extends React.Component {
             <FontAwesomeIcon size="xs" icon={faChevronRight} />
           </Draggable>
         </MainBar>
-        <Result
-          min={this.props.min}
-          max={this.props.max}
-          handleLoan={this.props.handleLoan}
-          onChange={(e) => {
-            if (
-              e.target.value <= this.props.max &&
-              e.target.value >= this.props.min
-            ) {
-              this.setState({
-                value: e.target.value * 1,
-                position:
-                  (((e.target.value * 100) / this.props.max) * 570) / 100,
-              });
-            } else if (e.target.value >= this.props.max) {
-              this.setState({
-                value: this.props.max,
-                position: 570,
-              });
-            } else if (e.target.value <= this.props.min) {
-              this.setState({
-                value: this.props.min,
-                position: 0,
-              });
-            }
-          }}
-          type="number"
-          value={this.state.value}
-        />
-        <Sign>{this.props.sign}</Sign>
+        <BoxResult>
+          <Result
+            min={this.props.min}
+            max={this.props.max}
+            handleLoan={this.props.handleLoan}
+            onChange={(e) => {
+              if (
+                e.target.value <= this.props.max &&
+                e.target.value >= this.props.min
+              ) {
+                this.setState({
+                  value: e.target.value * 1,
+                  position:
+                    (((e.target.value * 100) / this.props.max) * 570) / 100,
+                });
+              } else if (e.target.value >= this.props.max) {
+                this.setState({
+                  value: this.props.max,
+                  position: 570,
+                });
+              } else if (e.target.value <= this.props.min) {
+                this.setState({
+                  value: this.props.min,
+                  position: 0,
+                });
+              }
+            }}
+            type="number"
+            value={this.state.value}
+          />
+          <Sign>{this.props.sign}</Sign>
+        </BoxResult>
       </Main>
     );
   }
@@ -130,29 +140,7 @@ class Slider extends React.Component {
 
 export default Slider;
 
-const Sign = styled.div`
-  position: absolute;
-  top: 71%;
-  left: 80%;
-  height: 30px;
-  width: auto;
-  padding: 0 10px;
-  text-align: center;
-  line-height: 30px;
-  color: black;
-  font-size: 16px;
-  border-radius: 10px;
-  background-color: grey;
-`;
-
-const Main = styled.div`
-  position: relative;
-  width: 100%;
-  height: 50%;
-  font-size: 24px;
-`;
-
-const Result = styled.input`
+const BoxResult = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -166,11 +154,39 @@ const Result = styled.input`
   border: none;
   border-radius: 20px;
   color: white;
-  &:focus {
-    border: 1px solid orange;
-    border-radius: 20px;
-    outline: none;
-  }
+`;
+
+const Sign = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 10%;
+  left: calc(99% - 50px);
+  height: 80%;
+  width: 50px;
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  border-radius: 10px;
+  background-color: grey;
+`;
+
+const Main = styled.div`
+  position: relative;
+  width: 100%;
+  height: 50%;
+  font-size: 24px;
+`;
+
+const Result = styled.input`
+  width: 100%;
+  height: 80%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 22px;
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -179,7 +195,7 @@ const Result = styled.input`
 `;
 
 const OpacityBar = styled.div`
-  background-color: lightgrey;
+  background-color: blue;
   height: 100%;
   width: ${(props) => props.width}px;
   border-radius: 20px;
