@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/BankAppTask/static/css/main.9dde06f0.chunk.css",
+    "main.js": "/BankAppTask/static/js/main.3c494a16.chunk.js",
+    "main.js.map": "/BankAppTask/static/js/main.3c494a16.chunk.js.map",
+    "runtime-main.js": "/BankAppTask/static/js/runtime-main.e4edc211.js",
+    "runtime-main.js.map": "/BankAppTask/static/js/runtime-main.e4edc211.js.map",
+    "static/js/2.3f7228d1.chunk.js": "/BankAppTask/static/js/2.3f7228d1.chunk.js",
+    "static/js/2.3f7228d1.chunk.js.map": "/BankAppTask/static/js/2.3f7228d1.chunk.js.map",
+    "static/js/3.39838418.chunk.js": "/BankAppTask/static/js/3.39838418.chunk.js",
+    "static/js/3.39838418.chunk.js.map": "/BankAppTask/static/js/3.39838418.chunk.js.map",
+    "index.html": "/BankAppTask/index.html",
+    "static/css/main.9dde06f0.chunk.css.map": "/BankAppTask/static/css/main.9dde06f0.chunk.css.map",
+    "static/js/2.3f7228d1.chunk.js.LICENSE.txt": "/BankAppTask/static/js/2.3f7228d1.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e4edc211.js",
+    "static/js/2.3f7228d1.chunk.js",
+    "static/css/main.9dde06f0.chunk.css",
+    "static/js/main.3c494a16.chunk.js"
+  ]
+}
