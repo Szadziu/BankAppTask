@@ -11,7 +11,7 @@ class Slider extends React.Component {
     position: 0,
     value: this.props.min,
     opacityBarWidth: 0,
-    opacity: true,
+    isOpacityBar: true,
   };
   sliderRef = React.createRef();
 
@@ -20,8 +20,9 @@ class Slider extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.value !== this.state.value) {
-      this.props.handleLoan(this.state.value);
+    const { value } = this.state;
+    if (prevState.value !== value) {
+      this.props.handleLoan(value);
     }
   }
 
@@ -44,7 +45,6 @@ class Slider extends React.Component {
   };
 
   drag = (e) => {
-    // this.props.handleLoan(this.state.value);
     const slider = this.sliderRef.current;
     const { left, width } = slider.getBoundingClientRect();
     const draggableWidth = 50;
@@ -65,73 +65,73 @@ class Slider extends React.Component {
   };
 
   render() {
+    const {
+      sliderRef,
+      startDrag,
+      state: { opacityBarWidth, isOpacityBar, value, position },
+      props: { title, handleLoan, min, max, sign },
+    } = this;
+
     return (
       <Main>
-        <p style={{ textAlign: "center" }}>{this.props.text}</p>
+        <p style={{ textAlign: "center" }}>{title}</p>
         <MainBar
-          handleLoan={this.props.handleLoan}
-          width={this.state.opacityBarWidth}
-          position={this.state.position}
-          ref={this.sliderRef}
+          handleLoan={handleLoan}
+          width={opacityBarWidth}
+          position={position}
+          ref={sliderRef}
           onClick={(e) => {
             this.drag(e);
-            this.setState((prevState) => ({ opacity: !prevState.opacity }));
+            this.setState((prevState) => ({
+              isOpacityBar: !prevState.isOpacityBar,
+            }));
           }}
           onMouseMove={(e) => {
-            const slider = this.sliderRef.current;
+            const slider = sliderRef.current;
             const { left } = slider.getBoundingClientRect();
             const mouseX = e.clientX - left;
-            const clickedPosition = mouseX - this.state.position - 15;
+            const clickedPosition = mouseX - position - 15;
 
             this.setState({
               opacityBarWidth: clickedPosition,
-              opacity: true,
+              isOpacityBar: true,
             });
           }}
         >
-          <ProgressBar
-            style={{ width: this.state.position + 20 }}
-          ></ProgressBar>
-          {this.state.opacity ? <OpacityBar /> : null}
-          <Draggable
-            style={{ left: this.state.position }}
-            onMouseDown={this.startDrag}
-          >
+          <ProgressBar style={{ width: position + 20 }}></ProgressBar>
+          {isOpacityBar ? <OpacityBar /> : null}
+          <Draggable style={{ left: position }} onMouseDown={startDrag}>
             <FontAwesomeIcon size="xs" icon={faChevronLeft} pull="left" />
             <FontAwesomeIcon size="xs" icon={faChevronRight} />
           </Draggable>
         </MainBar>
         <BoxResult>
           <Result
-            min={this.props.min}
-            max={this.props.max}
-            handleLoan={this.props.handleLoan}
+            min={min}
+            max={max}
+            handleLoan={handleLoan}
             onChange={(e) => {
-              if (
-                e.target.value <= this.props.max &&
-                e.target.value >= this.props.min
-              ) {
+              if (e.target.value <= max && e.target.value >= min) {
                 this.setState({
                   value: e.target.value * 1,
-                  position:
-                    (((e.target.value * 100) / this.props.max) * 570) / 100,
+                  position: (((e.target.value * 100) / max) * 570) / 100,
                 });
-              } else if (e.target.value >= this.props.max) {
+              } else if (e.target.value >= max) {
                 this.setState({
-                  value: this.props.max,
+                  value: max,
                   position: 570,
                 });
-              } else if (e.target.value <= this.props.min) {
+              } else if (e.target.value <= min) {
                 this.setState({
-                  value: this.props.min,
+                  value: min,
                   position: 0,
                 });
               }
             }}
             type="number"
-            value={this.state.value}
+            value={value}
           />
-          <Sign>{this.props.sign}</Sign>
+          <Sign>{sign}</Sign>
         </BoxResult>
       </Main>
     );
@@ -142,51 +142,59 @@ export default Slider;
 
 const BoxResult = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
   top: 30%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
   width: 80%;
   height: 15%;
-  background-color: lightgray;
+
+  padding-left: 10px;
   border: none;
+
+  background-color: lightgray;
   border-radius: 20px;
   color: white;
+  transform: translate(-50%, -50%);
 `;
 
 const Sign = styled.div`
   position: absolute;
+  top: 10%;
+  left: calc(99% - 50px);
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 10%;
-  left: calc(99% - 50px);
   height: 80%;
   width: 50px;
+
+  background-color: grey;
+
   text-align: center;
   color: white;
   font-size: 16px;
   border-radius: 10px;
-  background-color: grey;
 `;
 
 const Main = styled.div`
   position: relative;
   width: 100%;
   height: 50%;
+
   font-size: 24px;
 `;
 
 const Result = styled.input`
   width: 100%;
   height: 80%;
-  background-color: transparent;
+
   border: none;
   outline: none;
+
+  background-color: transparent;
   color: white;
   font-size: 22px;
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -195,9 +203,11 @@ const Result = styled.input`
 `;
 
 const OpacityBar = styled.div`
-  background-color: blue;
-  height: 100%;
   width: ${(props) => props.width}px;
+  height: 100%;
+
+  background-color: blue;
+
   border-radius: 20px;
   opacity: 0.5;
 `;
@@ -206,9 +216,10 @@ const ProgressBar = styled.div`
   width: 0;
   height: 100%;
 
+  background: gray;
+
   border-radius: 20px;
 
-  background: gray;
   &:hover {
     cursor: pointer;
   }
@@ -216,17 +227,19 @@ const ProgressBar = styled.div`
 
 const MainBar = styled.div`
   position: relative;
-  display: flex;
-
   top: 10%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
   width: 620px;
   height: 10%;
+
+  padding: 1px;
+
   background-color: white;
+
   border-radius: 20px;
   box-shadow: 0 0 1px 1px lightgray;
-  padding: 1px;
+  transform: translate(-50%, -50%);
 
   &:hover ${OpacityBar} {
     width: ${(props) => props.width}px;
@@ -238,14 +251,12 @@ const MainBar = styled.div`
 const Draggable = styled.div`
   position: absolute;
   top: -20px;
-
-  height: 60px;
-  width: 60px;
-
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  width: 60px;
+  height: 60px;
 
   border-radius: 50%;
   box-shadow: 0 0 4px 0 black;

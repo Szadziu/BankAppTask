@@ -5,7 +5,7 @@ import Slider from "./Slider";
 
 class App extends React.Component {
   state = {
-    loanPeriod: 1,
+    loanPeriod: 0,
     loanAmount: 0,
     isChecked: true,
     interest: 0,
@@ -19,28 +19,31 @@ class App extends React.Component {
     this.setState({ loanPeriod: dataValue });
   };
   render() {
-    const { loanAmount, loanPeriod } = this.state;
-    const loanInstallment = Math.round(loanAmount / loanPeriod);
+    const { loanAmount, loanPeriod, interest, isChecked } = this.state;
+    const loanInstallment = Math.floor(loanAmount / loanPeriod);
     return (
       <>
-        <Container>
+        <Panel>
           <Slider
             sign={"M"}
-            text={"Okres"}
+            title={"Okres"}
             handleLoan={this.handleLoanPeriod}
             min={3}
             max={120}
           />
+
           <Slider
             sign={"PLN"}
-            text={"Kwota"}
+            title={"Kwota"}
             handleLoan={this.handleLoanAmount}
             min={500}
             max={100000}
           />
-        </Container>
-        <InterestRate>
+        </Panel>
+
+        <InterestRatePanel>
           <label htmlFor="title">Oprocentowanie</label>
+
           <InterestInput
             onChange={(e) => {
               if (e.target.value >= 0) {
@@ -61,31 +64,34 @@ class App extends React.Component {
             name="title"
             id="title"
             type="number"
-            disabled={!this.state.isChecked}
-            value={this.state.isChecked && this.state.interest}
+            disabled={!isChecked}
+            value={isChecked && interest}
           />
-          <Checkbox>
+
+          <CheckboxTemplate>
             <InterestCheckbox
               onChange={() => {
                 this.setState((prevState) => ({
                   isChecked: !prevState.isChecked,
                 }));
               }}
-              checked={this.state.isChecked}
+              checked={isChecked}
               type="checkbox"
             />
+
             <CheckboxLabel
-              className={this.state.isChecked ? "isChecked" : "isUnchecked"}
+              className={isChecked ? "isChecked" : "isUnchecked"}
             ></CheckboxLabel>
-          </Checkbox>
-          <PercentageSign>%</PercentageSign>
-          {this.state.isChecked ? (
+          </CheckboxTemplate>
+
+          <Sign>%</Sign>
+          {isChecked ? (
             <LoanInstallment>
               Rata kredytu:{" "}
               {loanInstallment
                 ? (
                     loanInstallment +
-                    loanInstallment * (this.state.interest / 100)
+                    loanInstallment * (interest / 100)
                   ).toFixed(2)
                 : "0"}
               zł
@@ -96,7 +102,7 @@ class App extends React.Component {
               zł
             </LoanInstallment>
           )}
-        </InterestRate>
+        </InterestRatePanel>
       </>
     );
   }
@@ -104,38 +110,42 @@ class App extends React.Component {
 
 export default App;
 
-const Checkbox = styled.div`
+const CheckboxTemplate = styled.div`
+  position: relative;
   width: 40px;
   height: 10px;
-  background: #555;
+
   margin: 20px 80px;
-  position: relative;
+
+  background: #555;
   border-radius: 3px;
 `;
 
 const CheckboxLabel = styled.label`
-  display: block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-
-  transition: all 0.5s ease;
-  cursor: pointer;
   position: absolute;
   top: -3px;
   left: -3px;
+  display: block;
+  width: 16px;
+  height: 16px;
 
   background: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+
+  transition: all 0.5s ease;
 `;
 
 const InterestCheckbox = styled.input`
-  opacity: 0;
-  cursor: pointer;
   position: relative;
   top: -200%;
   left: -30%;
   width: 50px;
   height: 40px;
+
+  opacity: 0;
+  cursor: pointer;
+
   &:checked + label {
     left: 27px;
   }
@@ -144,6 +154,7 @@ const InterestCheckbox = styled.input`
 const InterestInput = styled.input`
   width: 100px;
   height: 20px;
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -151,45 +162,52 @@ const InterestInput = styled.input`
   }
 `;
 
-const InterestRate = styled.div`
-  display: flex;
+const InterestRatePanel = styled.div`
   position: absolute;
-
+  display: flex;
   top: 85%;
   left: 30%;
 `;
 
-const PercentageSign = styled.div`
+const Sign = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 35px;
   height: 25px;
+
+  margin: 0 10px;
+
   background-color: lightgrey;
   border-radius: 5px;
-  margin: 0 10px;
 `;
 
 const LoanInstallment = styled.div`
-  background-color: orange;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 5px;
   width: 100px;
   height: 100px;
+
+  padding-left: 5px;
+
+  background-color: orange;
   border-radius: 20px;
 `;
 
-const Container = styled.div`
+const Panel = styled.div`
   position: absolute;
-  display: flex;
-  flex-direction: column;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  border: 2px solid orange;
-  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
   width: 50vw;
   height: 60vh;
+
+  border: 2px solid orange;
+
+  border-radius: 20px;
+  transform: translate(-50%, -50%);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 `;
