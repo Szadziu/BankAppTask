@@ -14,45 +14,59 @@ class Slider extends React.Component {
     isOpacityBar: true,
   };
   sliderRef = React.createRef();
+  draggableWidth = 50;
+  startPosition = 0;
+  sliderWidth = 570;
 
   componentDidMount() {
-    this.props.handleLoan(this.state.value);
+    const {
+      state: { value },
+      props: { handleLoan },
+    } = this;
+    handleLoan(value);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { value } = this.state;
+  componentDidUpdate(_, prevState) {
+    const {
+      state: { value },
+      props: { handleLoan },
+    } = this;
     if (prevState.value !== value) {
-      this.props.handleLoan(value);
+      handleLoan(value);
     }
   }
 
   startDrag = (e) => {
     e.preventDefault();
-    document.addEventListener("mousemove", this.drag);
-    document.addEventListener("mouseup", this.stopDrag);
+    const { drag, stopDrag } = this;
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("mouseup", stopDrag);
   };
 
   stopDrag = () => {
-    document.removeEventListener("mousemove", this.drag);
-    document.removeEventListener("mouseup", this.stopDrag);
+    const { drag, stopDrag } = this;
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("mouseup", stopDrag);
   };
 
   progressDrag = (width, mouseX) => {
-    const { max, min } = this.props;
-    const step = (width - 50) / (max - min);
-    const newValue = Math.round((mouseX - 25) / step) + min;
+    const {
+      props: { max, min },
+      draggableWidth,
+    } = this;
+    const step = (width - draggableWidth) / (max - min);
+    const newValue = Math.round((mouseX - draggableWidth / 2) / step) + min;
     this.setState({ value: newValue });
   };
 
   drag = (e) => {
-    const slider = this.sliderRef.current;
-    const { left, width } = slider.getBoundingClientRect();
-    const draggableWidth = 50;
+    const { draggableWidth, sliderRef, startPosition, progressDrag } = this;
+    const { left, width } = sliderRef.current.getBoundingClientRect();
     const mouseX = e.clientX - left;
+    const positionMouse = mouseX - draggableWidth / 2;
 
-    const startPosition = mouseX - draggableWidth / 2;
     if (mouseX - draggableWidth / 2 < 0) {
-      this.setState({ position: 0 });
+      this.setState({ position: startPosition });
       return;
     }
     if (mouseX + draggableWidth / 2 > width) {
@@ -60,47 +74,83 @@ class Slider extends React.Component {
       return;
     }
 
-    this.progressDrag(width, mouseX);
-    this.setState({ position: startPosition });
+    progressDrag(width, mouseX);
+    this.setState({ position: positionMouse });
+  };
+
+  handleMouseMove = (e) => {
+    const {
+      state: { position },
+      sliderRef,
+    } = this;
+    const { left } = sliderRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - left;
+    const clickedPosition = mouseX - position;
+
+    this.setState({
+      opacityBarWidth: clickedPosition,
+      isOpacityBar: true,
+    });
+  };
+
+  handleClick = (e) => {
+    this.drag(e);
+    this.setState((prevState) => ({
+      isOpacityBar: !prevState.isOpacityBar,
+    }));
+  };
+
+  handleChange = (e) => {
+    const {
+      startPosition,
+      sliderWidth,
+      props: { min, max },
+    } = this;
+    const value = e.target.value;
+    if (value <= max && value >= min) {
+      this.setState({
+        value: value * 1,
+        position: (((value * 100) / max) * sliderWidth) / 100,
+      });
+    } else if (value >= max) {
+      this.setState({
+        value: max,
+        position: sliderWidth,
+      });
+    } else if (value <= min) {
+      this.setState({
+        value: min,
+        position: startPosition,
+      });
+    }
   };
 
   render() {
     const {
       sliderRef,
+      sliderWidth,
       startDrag,
+      handleClick,
+      handleChange,
+      handleMouseMove,
       state: { opacityBarWidth, isOpacityBar, value, position },
       props: { title, handleLoan, min, max, sign },
     } = this;
 
     return (
-      <Main>
-        <p style={{ textAlign: "center" }}>{title}</p>
+      <Wrapper>
+        <Title>{title}</Title>
         <MainBar
-          handleLoan={handleLoan}
-          width={opacityBarWidth}
+          opacityWidth={opacityBarWidth}
+          width={sliderWidth}
           position={position}
           ref={sliderRef}
-          onClick={(e) => {
-            this.drag(e);
-            this.setState((prevState) => ({
-              isOpacityBar: !prevState.isOpacityBar,
-            }));
-          }}
-          onMouseMove={(e) => {
-            const slider = sliderRef.current;
-            const { left } = slider.getBoundingClientRect();
-            const mouseX = e.clientX - left;
-            const clickedPosition = mouseX - position - 15;
-
-            this.setState({
-              opacityBarWidth: clickedPosition,
-              isOpacityBar: true,
-            });
-          }}
+          onClick={(e) => handleClick(e)}
+          onMouseMove={(e) => handleMouseMove(e)}
         >
-          <ProgressBar style={{ width: position + 20 }}></ProgressBar>
-          {isOpacityBar ? <OpacityBar /> : null}
-          <Draggable style={{ left: position }} onMouseDown={startDrag}>
+          <ProgressBar position={position} />
+          {isOpacityBar && <OpacityBar />}
+          <Draggable position={position} onMouseDown={startDrag}>
             <FontAwesomeIcon size="xs" icon={faChevronLeft} pull="left" />
             <FontAwesomeIcon size="xs" icon={faChevronRight} />
           </Draggable>
@@ -110,35 +160,22 @@ class Slider extends React.Component {
             min={min}
             max={max}
             handleLoan={handleLoan}
-            onChange={(e) => {
-              if (e.target.value <= max && e.target.value >= min) {
-                this.setState({
-                  value: e.target.value * 1,
-                  position: (((e.target.value * 100) / max) * 570) / 100,
-                });
-              } else if (e.target.value >= max) {
-                this.setState({
-                  value: max,
-                  position: 570,
-                });
-              } else if (e.target.value <= min) {
-                this.setState({
-                  value: min,
-                  position: 0,
-                });
-              }
-            }}
+            onChange={(e) => handleChange(e)}
             type="number"
             value={value}
           />
           <Sign>{sign}</Sign>
         </BoxResult>
-      </Main>
+      </Wrapper>
     );
   }
 }
 
 export default Slider;
+
+const Title = styled.p`
+  text-align: center;
+`;
 
 const BoxResult = styled.div`
   position: relative;
@@ -151,7 +188,6 @@ const BoxResult = styled.div`
 
   padding-left: 10px;
   border: none;
-
   background-color: lightgray;
   border-radius: 20px;
   color: white;
@@ -169,14 +205,13 @@ const Sign = styled.div`
   width: 50px;
 
   background-color: grey;
-
   text-align: center;
   color: white;
   font-size: 16px;
   border-radius: 10px;
 `;
 
-const Main = styled.div`
+const Wrapper = styled.div`
   position: relative;
   width: 100%;
   height: 50%;
@@ -190,7 +225,6 @@ const Result = styled.input`
 
   border: none;
   outline: none;
-
   background-color: transparent;
   color: white;
   font-size: 22px;
@@ -207,22 +241,16 @@ const OpacityBar = styled.div`
   height: 100%;
 
   background-color: blue;
-
   border-radius: 20px;
   opacity: 0.5;
 `;
 
 const ProgressBar = styled.div`
-  width: 0;
+  width: ${(props) => props.position}px;
   height: 100%;
 
   background: gray;
-
   border-radius: 20px;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const MainBar = styled.div`
@@ -230,27 +258,26 @@ const MainBar = styled.div`
   top: 10%;
   left: 50%;
   display: flex;
-  width: 620px;
+  width: ${(props) => props.width}px;
   height: 10%;
 
   padding: 1px;
-
   background-color: white;
-
   border-radius: 20px;
   box-shadow: 0 0 1px 1px lightgray;
   transform: translate(-50%, -50%);
+  cursor: pointer;
 
   &:hover ${OpacityBar} {
-    width: ${(props) => props.width}px;
+    width: ${(props) => props.opacityWidth}px;
     background-color: grey;
-    cursor: pointer;
   }
 `;
 
 const Draggable = styled.div`
   position: absolute;
   top: -20px;
+  left: ${(props) => props.position}px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -260,12 +287,9 @@ const Draggable = styled.div`
 
   border-radius: 50%;
   box-shadow: 0 0 4px 0 black;
-
   font-size: 2rem;
   font-family: "Arial";
-
   background: orange;
   color: white;
-
   cursor: grab;
 `;
