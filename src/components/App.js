@@ -4,8 +4,8 @@ import Slider from "./Slider";
 
 class App extends React.Component {
   state = {
-    loanPeriod: 0,
-    loanAmount: 0,
+    loanPeriod: 3,
+    loanAmount: 500,
     isChecked: true,
     interest: 0,
   };

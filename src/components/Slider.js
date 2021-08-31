@@ -6,6 +6,21 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
+const DRAGGABLE_WIDTH = 50;
+const SLIDER_WIDTH = 570;
+const START_POSITION = 0;
+
+const progressDrag = (width, mouseX, min, max) => {
+  const step = (width - DRAGGABLE_WIDTH) / (max - min);
+  let newValue = Math.floor((mouseX - DRAGGABLE_WIDTH / 2) / step) + min;
+  console.log(newValue);
+
+  if (newValue < min) newValue = min;
+  else if (newValue > max) newValue = max;
+
+  return newValue;
+};
+
 class Slider extends React.Component {
   state = {
     position: 0,
@@ -14,27 +29,6 @@ class Slider extends React.Component {
     isOpacityBar: true,
   };
   sliderRef = React.createRef();
-  draggableWidth = 50;
-  startPosition = 0;
-  sliderWidth = 570;
-
-  componentDidMount() {
-    const {
-      state: { value },
-      props: { handleLoan },
-    } = this;
-    handleLoan(value);
-  }
-
-  componentDidUpdate(_, prevState) {
-    const {
-      state: { value },
-      props: { handleLoan },
-    } = this;
-    if (prevState.value !== value) {
-      handleLoan(value);
-    }
-  }
 
   startDrag = (e) => {
     e.preventDefault();
@@ -49,33 +43,29 @@ class Slider extends React.Component {
     document.removeEventListener("mouseup", stopDrag);
   };
 
-  progressDrag = (width, mouseX) => {
-    const {
-      props: { max, min },
-      draggableWidth,
-    } = this;
-    const step = (width - draggableWidth) / (max - min);
-    const newValue = Math.round((mouseX - draggableWidth / 2) / step) + min;
-    this.setState({ value: newValue });
-  };
-
   drag = (e) => {
-    const { draggableWidth, sliderRef, startPosition, progressDrag } = this;
+    const {
+      props: { handleLoan, min, max },
+      sliderRef,
+    } = this;
     const { left, width } = sliderRef.current.getBoundingClientRect();
     const mouseX = e.clientX - left;
-    const positionMouse = mouseX - draggableWidth / 2;
+    const positionMouse = mouseX - DRAGGABLE_WIDTH / 2;
 
-    if (mouseX - draggableWidth / 2 < 0) {
-      this.setState({ position: startPosition });
-      return;
-    }
-    if (mouseX + draggableWidth / 2 > width) {
-      this.setState({ position: width - draggableWidth });
-      return;
+    let newValue = progressDrag(width, mouseX, min, max);
+
+    if (positionMouse < 0) {
+      this.setState({ position: START_POSITION, value: min });
+    } else if (mouseX + DRAGGABLE_WIDTH / 2 > width) {
+      this.setState({
+        position: width - DRAGGABLE_WIDTH,
+        value: max,
+      });
+    } else {
+      this.setState({ position: positionMouse, value: newValue });
     }
 
-    progressDrag(width, mouseX);
-    this.setState({ position: positionMouse });
+    handleLoan(newValue);
   };
 
   handleMouseMove = (e) => {
@@ -101,34 +91,39 @@ class Slider extends React.Component {
   };
 
   handleChange = (e) => {
-    const {
-      startPosition,
-      sliderWidth,
-      props: { min, max },
-    } = this;
-    const value = e.target.value;
-    if (value <= max && value >= min) {
-      this.setState({
-        value: value * 1,
-        position: (((value * 100) / max) * sliderWidth) / 100,
-      });
-    } else if (value >= max) {
-      this.setState({
-        value: max,
-        position: sliderWidth,
-      });
-    } else if (value <= min) {
-      this.setState({
-        value: min,
-        position: startPosition,
-      });
-    }
+    const { min, max } = this.props;
+    let value = Number(e.target.value);
+
+    if (value > max) value = max;
+    if (value < min) value = min;
+
+    this.setState({
+      value,
+      position:
+        (((value * 100) / max) * (SLIDER_WIDTH - DRAGGABLE_WIDTH)) / 100,
+    });
+
+    // if (value <= max && value >= min) {
+    // this.setState({
+    //   value: value * 1,
+    //   position: (((value * 100) / max) * SLIDER_WIDTH) / 100,
+    // });
+    // } else if (value >= max) {
+    //   this.setState({
+    //     value: max,
+    //     position: SLIDER_WIDTH,
+    //   });
+    // } else if (value <= min) {
+    //   this.setState({
+    //     value: min,
+    //     position: START_POSITION,
+    //   });
+    // }
   };
 
   render() {
     const {
       sliderRef,
-      sliderWidth,
       startDrag,
       handleClick,
       handleChange,
@@ -142,7 +137,7 @@ class Slider extends React.Component {
         <Title>{title}</Title>
         <MainBar
           opacityWidth={opacityBarWidth}
-          width={sliderWidth}
+          width={SLIDER_WIDTH}
           position={position}
           ref={sliderRef}
           onClick={(e) => handleClick(e)}
@@ -150,7 +145,11 @@ class Slider extends React.Component {
         >
           <ProgressBar position={position} />
           {isOpacityBar && <OpacityBar />}
-          <Draggable position={position} onMouseDown={startDrag}>
+          <Draggable
+            width={DRAGGABLE_WIDTH}
+            position={position}
+            onMouseDown={startDrag}
+          >
             <FontAwesomeIcon size="xs" icon={faChevronLeft} pull="left" />
             <FontAwesomeIcon size="xs" icon={faChevronRight} />
           </Draggable>
@@ -259,7 +258,7 @@ const MainBar = styled.div`
   left: 50%;
   display: flex;
   width: ${(props) => props.width}px;
-  height: 10%;
+  height: 20px;
 
   padding: 1px;
   background-color: white;
@@ -276,14 +275,14 @@ const MainBar = styled.div`
 
 const Draggable = styled.div`
   position: absolute;
-  top: -20px;
+  top: -15px;
   left: ${(props) => props.position}px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  width: 60px;
-  height: 60px;
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.width}px;
 
   border-radius: 50%;
   box-shadow: 0 0 4px 0 black;
