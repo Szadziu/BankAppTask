@@ -91,7 +91,7 @@ class Slider extends React.Component {
   };
 
   handleChange = (e) => {
-    const { min, max } = this.props;
+    const { min, max, handleLoan } = this.props;
     let value = Number(e.target.value);
 
     if (value > max) value = max;
@@ -101,6 +101,7 @@ class Slider extends React.Component {
       position:
         (((value * 100) / max) * (SLIDER_WIDTH - DRAGGABLE_WIDTH)) / 100,
     });
+    handleLoan(value);
   };
 
   render() {
@@ -154,6 +155,14 @@ class Slider extends React.Component {
 
 export default Slider;
 
+const Wrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 50%;
+
+  font-size: 24px;
+`;
+
 const Title = styled.p`
   text-align: center;
 `;
@@ -164,10 +173,11 @@ const BoxResult = styled.div`
   left: 50%;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   width: 80%;
   height: 15%;
 
-  padding-left: 10px;
+  padding: 0 10px;
   border: none;
   background-color: lightgray;
   border-radius: 20px;
@@ -177,27 +187,16 @@ const BoxResult = styled.div`
 
 const Sign = styled.div`
   position: absolute;
-  top: 10%;
-  left: calc(99% - 50px);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 80%;
+  padding: 3px;
   width: 50px;
 
   background-color: grey;
-  text-align: center;
   color: white;
   font-size: 16px;
   border-radius: 10px;
-`;
-
-const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 50%;
-
-  font-size: 24px;
 `;
 
 const Result = styled.input`
@@ -221,17 +220,8 @@ const OpacityBar = styled.div`
   width: ${(props) => props.width}px;
   height: 100%;
 
-  background-color: blue;
   border-radius: 20px;
   opacity: 0.5;
-`;
-
-const ProgressBar = styled.div`
-  width: ${(props) => props.position}px;
-  height: 100%;
-
-  background: gray;
-  border-radius: 20px;
 `;
 
 const MainBar = styled.div`
@@ -253,6 +243,14 @@ const MainBar = styled.div`
     width: ${(props) => props.opacityWidth}px;
     background-color: grey;
   }
+`;
+
+const ProgressBar = styled.div`
+  width: ${(props) => props.position}px;
+  height: 100%;
+
+  background: lightseagreen;
+  border-radius: 20px;
 `;
 
 const Draggable = styled.div`

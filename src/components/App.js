@@ -67,7 +67,7 @@ class App extends React.Component {
           <Slider
             sign={"M"}
             title={"Okres"}
-            handleLoan={(e) => handleLoanPeriod(e.target.value)}
+            handleLoan={handleLoanPeriod}
             min={3}
             max={120}
           />
@@ -75,7 +75,7 @@ class App extends React.Component {
           <Slider
             sign={"PLN"}
             title={"Kwota"}
-            handleLoan={(e) => handleLoanAmount(e.target.value)}
+            handleLoan={handleLoanAmount}
             min={500}
             max={100000}
           />
