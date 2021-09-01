@@ -96,29 +96,11 @@ class Slider extends React.Component {
 
     if (value > max) value = max;
     if (value < min) value = min;
-
     this.setState({
       value,
       position:
         (((value * 100) / max) * (SLIDER_WIDTH - DRAGGABLE_WIDTH)) / 100,
     });
-
-    // if (value <= max && value >= min) {
-    // this.setState({
-    //   value: value * 1,
-    //   position: (((value * 100) / max) * SLIDER_WIDTH) / 100,
-    // });
-    // } else if (value >= max) {
-    //   this.setState({
-    //     value: max,
-    //     position: SLIDER_WIDTH,
-    //   });
-    // } else if (value <= min) {
-    //   this.setState({
-    //     value: min,
-    //     position: START_POSITION,
-    //   });
-    // }
   };
 
   render() {

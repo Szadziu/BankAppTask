@@ -17,8 +17,49 @@ class App extends React.Component {
   handleLoanPeriod = (dataValue) => {
     this.setState({ loanPeriod: dataValue });
   };
+
+  handleCheckbox = () => {
+    this.setState((prevState) => ({
+      isChecked: !prevState.isChecked,
+    }));
+  };
+
+  handleEdgeInterestRate = (e) => {
+    const targetValue = Number(e.target.value);
+    let newValue;
+
+    if (targetValue >= 0 && targetValue <= 12) newValue = targetValue;
+    if (targetValue > 12) newValue = 12;
+    if (targetValue < 0) newValue = 0;
+
+    this.setState({
+      interest: newValue,
+    });
+
+    // if (e.target.value >= 0) {
+    //   if (e.target.value > 12) {
+    //     e.target.value = 12;
+    //     this.setState({
+    //       interest: 12,
+    //     });
+    //     return;
+    //   }
+    //   this.setState({
+    //     interest: e.target.value * 1,
+    //   });
+    // } else {
+    //   e.target.value = 0;
+    // }
+  };
+
   render() {
-    const { loanAmount, loanPeriod, interest, isChecked } = this.state;
+    const {
+      handleEdgeInterestRate,
+      handleLoanPeriod,
+      handleLoanAmount,
+      handleCheckbox,
+      state: { loanAmount, loanPeriod, interest, isChecked },
+    } = this;
     const loanInstallment = Math.floor(loanAmount / loanPeriod);
     return (
       <>
@@ -26,7 +67,7 @@ class App extends React.Component {
           <Slider
             sign={"M"}
             title={"Okres"}
-            handleLoan={this.handleLoanPeriod}
+            handleLoan={(e) => handleLoanPeriod(e.target.value)}
             min={3}
             max={120}
           />
@@ -34,7 +75,7 @@ class App extends React.Component {
           <Slider
             sign={"PLN"}
             title={"Kwota"}
-            handleLoan={this.handleLoanAmount}
+            handleLoan={(e) => handleLoanAmount(e.target.value)}
             min={500}
             max={100000}
           />
@@ -44,22 +85,7 @@ class App extends React.Component {
           <label htmlFor="title">Oprocentowanie</label>
 
           <InterestInput
-            onChange={(e) => {
-              if (e.target.value >= 0) {
-                if (e.target.value > 12) {
-                  e.target.value = 12;
-                  this.setState({
-                    interest: 12,
-                  });
-                  return;
-                }
-                this.setState({
-                  interest: e.target.value * 1,
-                });
-              } else {
-                e.target.value = 0;
-              }
-            }}
+            onChange={(e) => handleEdgeInterestRate(e)}
             name="title"
             id="title"
             type="number"
@@ -69,11 +95,7 @@ class App extends React.Component {
 
           <CheckboxTemplate>
             <InterestCheckbox
-              onChange={() => {
-                this.setState((prevState) => ({
-                  isChecked: !prevState.isChecked,
-                }));
-              }}
+              onChange={(e) => handleCheckbox(e)}
               checked={isChecked}
               type="checkbox"
             />
