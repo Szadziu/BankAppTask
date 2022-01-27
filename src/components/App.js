@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import React from "react";
-import Slider from "./Slider";
+import React from 'react';
+import styled from 'styled-components';
+import Slider from './Slider';
 
 class App extends React.Component {
   state = {
@@ -65,16 +65,16 @@ class App extends React.Component {
       <>
         <Panel>
           <Slider
-            sign={"M"}
-            title={"Okres"}
+            sign={'M'}
+            title={'Okres'}
             handleLoan={handleLoanPeriod}
             min={3}
             max={120}
           />
 
           <Slider
-            sign={"PLN"}
-            title={"Kwota"}
+            sign={'PLN'}
+            title={'Kwota'}
             handleLoan={handleLoanAmount}
             min={500}
             max={100000}
@@ -82,13 +82,13 @@ class App extends React.Component {
         </Panel>
 
         <InterestRatePanel>
-          <label htmlFor="title">Oprocentowanie</label>
+          <label htmlFor='title'>Oprocentowanie</label>
 
           <InterestInput
             onChange={(e) => handleEdgeInterestRate(e)}
-            name="title"
-            id="title"
-            type="number"
+            name='title'
+            id='title'
+            type='number'
             disabled={!isChecked}
             value={isChecked && interest}
           />
@@ -97,29 +97,29 @@ class App extends React.Component {
             <InterestCheckbox
               onChange={(e) => handleCheckbox(e)}
               checked={isChecked}
-              type="checkbox"
+              type='checkbox'
             />
 
             <CheckboxLabel
-              className={isChecked ? "isChecked" : "isUnchecked"}
+              className={isChecked ? 'isChecked' : 'isUnchecked'}
             ></CheckboxLabel>
           </CheckboxTemplate>
 
           <Sign>%</Sign>
           {isChecked ? (
             <LoanInstallment>
-              Rata kredytu:{" "}
+              Rata kredytu:{' '}
               {loanInstallment
                 ? (
                     loanInstallment +
                     loanInstallment * (interest / 100)
                   ).toFixed(2)
-                : "0"}
+                : '0'}
               zł
             </LoanInstallment>
           ) : (
             <LoanInstallment>
-              Rata kredytu: {loanInstallment ? loanInstallment.toFixed(2) : "0"}
+              Rata kredytu: {loanInstallment ? loanInstallment.toFixed(2) : '0'}
               zł
             </LoanInstallment>
           )}
@@ -133,27 +133,28 @@ export default App;
 
 const CheckboxTemplate = styled.div`
   position: relative;
+
   width: 40px;
   height: 10px;
-
   margin: 20px 80px;
+  border-radius: 3px;
 
   background: #555;
-  border-radius: 3px;
 `;
 
 const CheckboxLabel = styled.label`
   position: absolute;
   top: -3px;
   left: -3px;
+
   display: block;
   width: 16px;
   height: 16px;
+  border-radius: 50%;
 
   background: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
 
+  cursor: pointer;
   transition: all 0.5s ease;
 `;
 
@@ -161,10 +162,11 @@ const InterestCheckbox = styled.input`
   position: relative;
   top: -200%;
   left: -30%;
+
   width: 50px;
   height: 40px;
-
   opacity: 0;
+
   cursor: pointer;
 
   &:checked + label {
@@ -185,9 +187,10 @@ const InterestInput = styled.input`
 
 const InterestRatePanel = styled.div`
   position: absolute;
-  display: flex;
   top: 85%;
   left: 30%;
+
+  display: flex;
 `;
 
 const Sign = styled.div`
@@ -196,11 +199,10 @@ const Sign = styled.div`
   align-items: center;
   width: 35px;
   height: 25px;
-
   margin: 0 10px;
+  border-radius: 5px;
 
   background-color: lightgrey;
-  border-radius: 5px;
 `;
 
 const LoanInstallment = styled.div`
@@ -209,26 +211,25 @@ const LoanInstallment = styled.div`
   align-items: center;
   width: 100px;
   height: 100px;
-
   padding-left: 5px;
+  border-radius: 20px;
 
   background-color: orange;
-  border-radius: 20px;
 `;
 
 const Panel = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
+
   display: flex;
   flex-direction: column;
   width: 50vw;
   height: 60vh;
-
-  border: 2px solid orange;
-
-  border-radius: 20px;
   transform: translate(-50%, -50%);
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  border: 2px solid orange;
+  border-radius: 20px;
+
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 `;

@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from 'react';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronRight,
   faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 const DRAGGABLE_WIDTH = 50;
 const SLIDER_WIDTH = 570;
@@ -33,14 +33,14 @@ class Slider extends React.Component {
   startDrag = (e) => {
     e.preventDefault();
     const { drag, stopDrag } = this;
-    document.addEventListener("mousemove", drag);
-    document.addEventListener("mouseup", stopDrag);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
   };
 
   stopDrag = () => {
     const { drag, stopDrag } = this;
-    document.removeEventListener("mousemove", drag);
-    document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', stopDrag);
   };
 
   drag = (e) => {
@@ -133,8 +133,8 @@ class Slider extends React.Component {
             position={position}
             onMouseDown={startDrag}
           >
-            <FontAwesomeIcon size="xs" icon={faChevronLeft} pull="left" />
-            <FontAwesomeIcon size="xs" icon={faChevronRight} />
+            <FontAwesomeIcon size='xs' icon={faChevronLeft} pull='left' />
+            <FontAwesomeIcon size='xs' icon={faChevronRight} />
           </Draggable>
         </MainBar>
         <BoxResult>
@@ -143,7 +143,7 @@ class Slider extends React.Component {
             max={max}
             handleLoan={handleLoan}
             onChange={(e) => handleChange(e)}
-            type="number"
+            type='number'
             value={value}
           />
           <Sign>{sign}</Sign>
@@ -160,7 +160,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 50%;
 
-  font-size: 24px;
+  font-size: 1.3rem;
 `;
 
 const Title = styled.p`
@@ -171,43 +171,46 @@ const BoxResult = styled.div`
   position: relative;
   top: 30%;
   left: 50%;
+
   display: flex;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
   width: 80%;
   height: 15%;
-
+  transform: translate(-50%, -50%);
   padding: 0 10px;
   border: none;
-  background-color: lightgray;
   border-radius: 20px;
-  color: white;
-  transform: translate(-50%, -50%);
+
+  background-color: #ccc;
 `;
 
 const Sign = styled.div`
   position: absolute;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3px;
   width: 50px;
-
-  background-color: grey;
-  color: white;
-  font-size: 16px;
   border-radius: 10px;
+  padding: 3px;
+
+  background-color: #555;
+  color: #fff;
+
+  font-size: 1rem;
 `;
 
 const Result = styled.input`
   width: 100%;
   height: 80%;
-
   border: none;
   outline: none;
+
   background-color: transparent;
-  color: white;
-  font-size: 22px;
+  color: #fff;
+
+  font-size: 1.2rem;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
@@ -219,7 +222,6 @@ const Result = styled.input`
 const OpacityBar = styled.div`
   width: ${(props) => props.width}px;
   height: 100%;
-
   border-radius: 20px;
   opacity: 0.5;
 `;
@@ -228,19 +230,20 @@ const MainBar = styled.div`
   position: relative;
   top: 10%;
   left: 50%;
+
   display: flex;
   width: ${(props) => props.width}px;
   height: 20px;
-
-  padding: 1px;
-  background-color: white;
-  border-radius: 20px;
-  box-shadow: 0 0 1px 1px lightgray;
   transform: translate(-50%, -50%);
+  padding: 1px;
+  border-radius: 20px;
+  box-shadow: 0 0 1px 1px #ddd;
+
   cursor: pointer;
 
   &:hover ${OpacityBar} {
     width: ${(props) => props.opacityWidth}px;
+
     background-color: grey;
   }
 `;
@@ -248,27 +251,30 @@ const MainBar = styled.div`
 const ProgressBar = styled.div`
   width: ${(props) => props.position}px;
   height: 100%;
+  border-radius: 20px;
 
   background: lightseagreen;
-  border-radius: 20px;
 `;
 
 const Draggable = styled.div`
   position: absolute;
   top: -15px;
   left: ${(props) => props.position}px;
+
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   width: ${(props) => props.width}px;
   height: ${(props) => props.width}px;
-
   border-radius: 50%;
-  box-shadow: 0 0 4px 0 black;
-  font-size: 2rem;
-  font-family: "Arial";
+  box-shadow: 0 0 4px 0 #000;
+
   background: orange;
   color: white;
+
+  font-size: 2rem;
+  font-family: 'Arial';
+
   cursor: grab;
 `;
