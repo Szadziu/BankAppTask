@@ -7,13 +7,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const DRAGGABLE_WIDTH = 50;
-const SLIDER_WIDTH = 570;
+const SLIDER_WIDTH = 300;
 const START_POSITION = 0;
 
 const progressDrag = (width, mouseX, min, max) => {
   const step = (width - DRAGGABLE_WIDTH) / (max - min);
   let newValue = Math.floor((mouseX - DRAGGABLE_WIDTH / 2) / step) + min;
-  console.log(newValue);
+  // console.log(newValue);
 
   if (newValue < min) newValue = min;
   else if (newValue > max) newValue = max;
@@ -146,7 +146,7 @@ class Slider extends React.Component {
             type='number'
             value={value}
           />
-          <Sign>{sign}</Sign>
+          <Unit>{sign}</Unit>
         </BoxResult>
       </Wrapper>
     );
@@ -175,27 +175,27 @@ const BoxResult = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 80%;
+  width: 50%;
   height: 15%;
   transform: translate(-50%, -50%);
   padding: 0 10px;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
 
-  background-color: #ccc;
+  background-color: #444;
 `;
 
-const Sign = styled.div`
+const Unit = styled.div`
   position: absolute;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  border-radius: 10px;
-  padding: 3px;
+  box-shadow: 0 0 5px 2px #fff;
+  border-radius: 5px;
+  padding: 0 10px;
 
-  background-color: #555;
+  background-color: #777;
   color: #fff;
 
   font-size: 1rem;
@@ -232,12 +232,11 @@ const MainBar = styled.div`
   left: 50%;
 
   display: flex;
-  width: ${(props) => props.width}px;
-  height: 20px;
+  width: ${({ width }) => width}px;
+  height: 10%;
   transform: translate(-50%, -50%);
-  padding: 1px;
   border-radius: 20px;
-  box-shadow: 0 0 1px 1px #ddd;
+  box-shadow: 0 0 10px 5px #aaa;
 
   cursor: pointer;
 
@@ -249,7 +248,7 @@ const MainBar = styled.div`
 `;
 
 const ProgressBar = styled.div`
-  width: ${(props) => props.position}px;
+  width: ${(props) => props.position + 10}px;
   height: 100%;
   border-radius: 20px;
 
@@ -270,11 +269,10 @@ const Draggable = styled.div`
   border-radius: 50%;
   box-shadow: 0 0 4px 0 #000;
 
-  background: orange;
-  color: white;
+  background: #fa863f;
+  color: #fff;
 
   font-size: 2rem;
-  font-family: 'Arial';
 
   cursor: grab;
 `;

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Slider from './Slider';
+import Suwak from './Suwak';
 
 class App extends React.Component {
   state = {
@@ -35,21 +36,6 @@ class App extends React.Component {
     this.setState({
       interest: newValue,
     });
-
-    // if (e.target.value >= 0) {
-    //   if (e.target.value > 12) {
-    //     e.target.value = 12;
-    //     this.setState({
-    //       interest: 12,
-    //     });
-    //     return;
-    //   }
-    //   this.setState({
-    //     interest: e.target.value * 1,
-    //   });
-    // } else {
-    //   e.target.value = 0;
-    // }
   };
 
   render() {
@@ -62,7 +48,7 @@ class App extends React.Component {
     } = this;
     const loanInstallment = Math.floor(loanAmount / loanPeriod);
     return (
-      <>
+      <MainWrapper>
         <Panel>
           <Slider
             sign={'M'}
@@ -79,10 +65,11 @@ class App extends React.Component {
             min={500}
             max={100000}
           />
+          {/* <Suwak text='suwak' value={0} /> */}
         </Panel>
 
         <InterestRatePanel>
-          <label htmlFor='title'>Oprocentowanie</label>
+          <Label htmlFor='title'>Oprocentowanie</Label>
 
           <InterestInput
             onChange={(e) => handleEdgeInterestRate(e)}
@@ -92,7 +79,7 @@ class App extends React.Component {
             disabled={!isChecked}
             value={isChecked && interest}
           />
-
+          <UnitOfInterest>%</UnitOfInterest>
           <CheckboxTemplate>
             <InterestCheckbox
               onChange={(e) => handleCheckbox(e)}
@@ -105,7 +92,6 @@ class App extends React.Component {
             ></CheckboxLabel>
           </CheckboxTemplate>
 
-          <Sign>%</Sign>
           {isChecked ? (
             <LoanInstallment>
               Rata kredytu:{' '}
@@ -124,112 +110,170 @@ class App extends React.Component {
             </LoanInstallment>
           )}
         </InterestRatePanel>
-      </>
+      </MainWrapper>
     );
   }
 }
 
 export default App;
-
-const CheckboxTemplate = styled.div`
-  position: relative;
-
-  width: 40px;
-  height: 10px;
-  margin: 20px 80px;
-  border-radius: 3px;
-
-  background: #555;
+// kontener całej aplikacji
+const MainWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 `;
 
+// panel z suwakami
+const Panel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 50%;
+  /* transform: translate(-50%, -50%); */
+  border: 2px solid #fa863f;
+  border-radius: 20px;
+
+  font-family: 'Cormorant SC', serif;
+`;
+
+// panel oprocentowania
+const InterestRatePanel = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10%;
+  width: 90%;
+  height: 40%;
+
+  font-family: 'Cormorant SC', serif;
+`;
+
+// tytuł oprocentowanie
+const Label = styled.label`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 10%;
+  border-radius: 20px;
+  box-shadow: 0 0 10px 3px #777;
+
+  font-size: 1rem;
+  text-transform: uppercase;
+`;
+
+// wl/wyl suwak do oprocentowania
+const CheckboxTemplate = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 15%;
+  height: 5%;
+  border-radius: 5px;
+
+  background: #444;
+`;
+// kropka od suwaka oprocentowania
 const CheckboxLabel = styled.label`
   position: absolute;
-  top: -3px;
-  left: -3px;
+  left: -10%;
 
   display: block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  transform: rotate(45deg);
+  box-shadow: 0 0 5px 2px red;
 
-  background: #ccc;
+  background: #fff;
 
   cursor: pointer;
   transition: all 0.5s ease;
-`;
 
+  &:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: #444;
+    border-radius: 20%;
+  }
+`;
+// ukryty checkbox
 const InterestCheckbox = styled.input`
   position: relative;
-  top: -200%;
-  left: -30%;
+  z-index: 1;
 
-  width: 50px;
-  height: 40px;
+  width: 100%;
+  height: 100%;
   opacity: 0;
 
   cursor: pointer;
 
   &:checked + label {
-    left: 27px;
+    left: calc(110% - 20px);
+
+    transform: rotate(225deg);
+    box-shadow: 0 0 5px 2px green;
   }
 `;
-
+// input oprocentowania
 const InterestInput = styled.input`
-  width: 100px;
-  height: 20px;
+  width: 10%;
+  height: 10%;
+  border: none;
+  box-shadow: 0 0 5px 2px #777;
+  border-radius: 20%;
+
+  text-align: center;
+  font-size: 1rem;
+
+  transition: 0.4s;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
-    margin: 0;
+  }
+
+  &:disabled {
+    color: #666;
+    background-color: #666;
   }
 `;
 
-const InterestRatePanel = styled.div`
-  position: absolute;
-  top: 85%;
-  left: 30%;
-
-  display: flex;
-`;
-
-const Sign = styled.div`
+// kontener ze znakiem %
+const UnitOfInterest = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 35px;
-  height: 25px;
-  margin: 0 10px;
-  border-radius: 5px;
+  width: 15%;
+  height: 10%;
+  box-shadow: 0 0 5px 2px #777;
+  border-radius: 20px;
 
-  background-color: lightgrey;
+  font-size: 1.5rem;
 `;
-
+// kontener na ratę kredytu
 const LoanInstallment = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  padding-left: 5px;
+  width: 70%;
+  height: 40%;
+  padding: 15px;
+  box-shadow: 0 0 7px 4px #8c4b23;
   border-radius: 20px;
 
-  background-color: orange;
-`;
+  background-color: #fa863f;
+  color: #444;
 
-const Panel = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  display: flex;
-  flex-direction: column;
-  width: 50vw;
-  height: 60vh;
-  transform: translate(-50%, -50%);
-  border: 2px solid orange;
-  border-radius: 20px;
-
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-align: center;
+  font-size: 1.5rem;
 `;
