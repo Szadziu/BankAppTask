@@ -6,14 +6,13 @@ import {
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons';
 
-const DRAGGABLE_WIDTH = 50;
+const DRAGGABLE_WIDTH = 35;
 const SLIDER_WIDTH = 300;
 const START_POSITION = 0;
 
 const progressDrag = (width, mouseX, min, max) => {
   const step = (width - DRAGGABLE_WIDTH) / (max - min);
   let newValue = Math.floor((mouseX - DRAGGABLE_WIDTH / 2) / step) + min;
-  // console.log(newValue);
 
   if (newValue < min) newValue = min;
   else if (newValue > max) newValue = max;
@@ -155,18 +154,30 @@ class Slider extends React.Component {
 
 export default Slider;
 
+// container na pojedynczy slider
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
   height: 50%;
 
   font-size: 1.3rem;
+
+  @media (min-width: 768px) {
+    font-size: 1.7rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 2.4rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 4rem;
+  }
 `;
 
 const Title = styled.p`
   text-align: center;
+  background-color: #fa863f;
 `;
-
+// container na result i jednostkę
 const BoxResult = styled.div`
   position: relative;
   top: 30%;
@@ -183,8 +194,12 @@ const BoxResult = styled.div`
   border-radius: 10px;
 
   background-color: #444;
-`;
 
+  @media (min-width: 3840px) {
+    height: 10%;
+  }
+`;
+// jednostka slidera
 const Unit = styled.div`
   position: absolute;
 
@@ -198,9 +213,19 @@ const Unit = styled.div`
   background-color: #777;
   color: #fff;
 
-  font-size: 1rem;
-`;
+  font-size: 0.7rem;
 
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 1.6rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 2.4rem;
+  }
+`;
+// aktualna wartosc slidera
 const Result = styled.input`
   width: 100%;
   height: 80%;
@@ -210,12 +235,22 @@ const Result = styled.input`
   background-color: transparent;
   color: #fff;
 
-  font-size: 1.2rem;
+  font-size: 1rem;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
+  @media (min-width: 1920px) {
+    font-size: 2.4rem;
+  }
+  @media (min-width: 3840px) {
+    font-size: 3.8rem;
   }
 `;
 
@@ -232,6 +267,7 @@ const MainBar = styled.div`
   left: 50%;
 
   display: flex;
+  align-items: center;
   width: ${({ width }) => width}px;
   height: 10%;
   transform: translate(-50%, -50%);
@@ -245,10 +281,16 @@ const MainBar = styled.div`
 
     background-color: grey;
   }
+  @media (min-width: 768px) {
+    height: 15%;
+  }
+  @media (min-width: 1920px) {
+    height: 10%;
+  }
 `;
 
 const ProgressBar = styled.div`
-  width: ${(props) => props.position + 10}px;
+  width: ${({ position }) => position}px;
   height: 100%;
   border-radius: 20px;
 
@@ -257,7 +299,7 @@ const ProgressBar = styled.div`
 
 const Draggable = styled.div`
   position: absolute;
-  top: -15px;
+  top: -12.5%;
   left: ${(props) => props.position}px;
 
   display: flex;
@@ -272,7 +314,26 @@ const Draggable = styled.div`
   background: #fa863f;
   color: #fff;
 
-  font-size: 2rem;
+  font-size: 1rem;
 
   cursor: grab;
+
+  @media (min-width: 768px) {
+    width: ${(props) => props.width + 20}px;
+    height: ${(props) => props.width + 20}px;
+
+    font-size: 1.5rem;
+  }
+  @media (min-width: 1920px) {
+    width: ${(props) => props.width + 30}px;
+    height: ${(props) => props.width + 30}px;
+
+    font-size: 1.8rem;
+  }
+  @media (min-width: 3840px) {
+    width: ${(props) => props.width + 90}px;
+    height: ${(props) => props.width + 90}px;
+
+    font-size: 2.8rem;
+  }
 `;
