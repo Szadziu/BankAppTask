@@ -64,7 +64,6 @@ class App extends React.Component {
             min={500}
             max={100000}
           />
-          {/* <Suwak text='suwak' value={0} /> */}
         </Panel>
 
         <InterestRatePanel>
@@ -78,8 +77,8 @@ class App extends React.Component {
             disabled={!isChecked}
             value={isChecked && interest}
           />
-          <UnitOfInterest>%</UnitOfInterest>
-          <CheckboxTemplate>
+          <UnitOfInterest checked={isChecked}>%</UnitOfInterest>
+          <CheckboxTemplate checked={isChecked}>
             <InterestCheckbox
               onChange={(e) => handleCheckbox(e)}
               checked={isChecked}
@@ -115,7 +114,6 @@ class App extends React.Component {
 }
 
 export default App;
-// kontener całej aplikacji
 const MainWrapper = styled.div`
   position: absolute;
   top: 50%;
@@ -127,8 +125,9 @@ const MainWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100vw;
-  max-width: 2500px;
+  max-width: 1600px;
   height: 100vh;
+  box-sizing: border-box;
   border: 2px solid black;
 
   @media (min-width: 1366px) {
@@ -136,12 +135,12 @@ const MainWrapper = styled.div`
   }
 `;
 
-// panel z suwakami
 const Panel = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
   height: 50%;
+  padding-bottom: 20px;
   border: 2px solid #fa863f;
   border-radius: 20px;
 
@@ -151,9 +150,13 @@ const Panel = styled.div`
     width: 40%;
     height: 80%;
   }
+
+  @media (min-width: 3840px) {
+    height: 60%;
+    justify-content: space-around;
+  }
 `;
 
-// panel oprocentowania
 const InterestRatePanel = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -169,9 +172,12 @@ const InterestRatePanel = styled.div`
     width: 40%;
     height: 80%;
   }
+
+  @media (min-width: 3840px) {
+    height: 60%;
+  }
 `;
 
-// tytuł oprocentowanie
 const Label = styled.label`
   display: flex;
   justify-content: center;
@@ -195,11 +201,10 @@ const Label = styled.label`
     font-size: 2.2rem;
   }
   @media (min-width: 3840px) {
-    font-size: 4.2rem;
+    font-size: 2.6rem;
   }
 `;
 
-// wl/wyl suwak do oprocentowania
 const CheckboxTemplate = styled.div`
   position: relative;
   display: flex;
@@ -208,7 +213,7 @@ const CheckboxTemplate = styled.div`
   height: 5%;
   border-radius: 5px;
 
-  background: #444;
+  background: ${({ checked }) => (checked ? '#999' : '#444')};
 
   @media (min-width: 768px) {
     width: 10%;
@@ -217,11 +222,11 @@ const CheckboxTemplate = styled.div`
     height: 20px;
   }
   @media (min-width: 3840px) {
-    width: 15%;
+    width: 20%;
     height: 30px;
   }
 `;
-// kropka od suwaka oprocentowania
+
 const CheckboxLabel = styled.label`
   position: absolute;
   left: -10%;
@@ -254,11 +259,11 @@ const CheckboxLabel = styled.label`
     height: 30px;
   }
   @media (min-width: 3840px) {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
 `;
-// ukryty checkbox
+
 const InterestCheckbox = styled.input`
   position: relative;
   z-index: 1;
@@ -276,14 +281,17 @@ const InterestCheckbox = styled.input`
     box-shadow: 0 0 5px 2px green;
   }
 
+  &:checked div {
+    background-color: #444;
+  }
+
   @media (min-width: 3840px) {
     &:checked + label {
-      left: calc(110% - 60px);
+      left: calc(110% - 50px);
     }
   }
 `;
 
-// input oprocentowania
 const InterestInput = styled.input`
   width: 10%;
   height: 10%;
@@ -301,8 +309,7 @@ const InterestInput = styled.input`
   }
 
   &:disabled {
-    color: #666;
-    background-color: #666;
+    opacity: 0;
   }
   @media (min-width: 768px) {
     font-size: 1.4rem;
@@ -315,13 +322,15 @@ const InterestInput = styled.input`
     font-size: 1.9rem;
   }
   @media (min-width: 3840px) {
-    font-size: 3rem;
+    width: 15%;
+
+    font-size: 2.6rem;
   }
 `;
 
-// kontener ze znakiem %
 const UnitOfInterest = styled.div`
   display: flex;
+  opacity: ${({ checked }) => checked || 0};
   justify-content: center;
   align-items: center;
   width: 15%;
@@ -331,6 +340,9 @@ const UnitOfInterest = styled.div`
   padding-bottom: 5px;
 
   font-size: 1.5rem;
+
+  transition: 0.4s;
+
   @media (min-width: 768px) {
     width: 10%;
 
@@ -343,10 +355,12 @@ const UnitOfInterest = styled.div`
     font-size: 2.3rem;
   }
   @media (min-width: 3840px) {
-    font-size: 4rem;
+    width: 15%;
+
+    font-size: 3.2rem;
   }
 `;
-// kontener na ratę kredytu
+
 const LoanInstallment = styled.div`
   display: flex;
   justify-content: center;
@@ -369,11 +383,15 @@ const LoanInstallment = styled.div`
   @media (min-width: 1366px) {
     width: 60%;
     height: 35%;
+
+    font-size: 2.2rem;
   }
   @media (min-width: 1920px) {
     font-size: 2.8rem;
   }
   @media (min-width: 3840px) {
+    width: 100%;
+
     font-size: 4.5rem;
   }
 `;

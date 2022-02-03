@@ -6,8 +6,9 @@ import {
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons';
 
-const DRAGGABLE_WIDTH = 35;
-const SLIDER_WIDTH = 300;
+const DRAGGABLE_WIDTH = 45;
+const SLIDER_WIDTH = 270;
+const SLIDER_HEIGHT = 20;
 const START_POSITION = 0;
 
 const progressDrag = (width, mouseX, min, max) => {
@@ -34,12 +35,16 @@ class Slider extends React.Component {
     const { drag, stopDrag } = this;
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchmove', drag);
+    document.addEventListener('touchend', stopDrag);
   };
 
   stopDrag = () => {
     const { drag, stopDrag } = this;
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchmove', drag);
+    document.removeEventListener('touchend', stopDrag);
   };
 
   drag = (e) => {
@@ -48,7 +53,7 @@ class Slider extends React.Component {
       sliderRef,
     } = this;
     const { left, width } = sliderRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - left;
+    const mouseX = (e.clientX ?? e.touches[0].clientX) - left;
     const positionMouse = mouseX - DRAGGABLE_WIDTH / 2;
 
     let newValue = progressDrag(width, mouseX, min, max);
@@ -118,19 +123,22 @@ class Slider extends React.Component {
       <Wrapper>
         <Title>{title}</Title>
         <MainBar
-          opacityWidth={opacityBarWidth}
+          opacityWidth={opacityBarWidth - DRAGGABLE_WIDTH / 2}
           width={SLIDER_WIDTH}
+          height={SLIDER_HEIGHT}
           position={position}
           ref={sliderRef}
           onClick={(e) => handleClick(e)}
           onMouseMove={(e) => handleMouseMove(e)}
         >
-          <ProgressBar position={position} />
+          <ProgressBar position={position + DRAGGABLE_WIDTH / 2} />
           {isOpacityBar && <OpacityBar />}
           <Draggable
             width={DRAGGABLE_WIDTH}
+            halfBarHeight={SLIDER_HEIGHT / 2}
             position={position}
             onMouseDown={startDrag}
+            onTouchStart={startDrag}
           >
             <FontAwesomeIcon size='xs' icon={faChevronLeft} pull='left' />
             <FontAwesomeIcon size='xs' icon={faChevronRight} />
@@ -154,7 +162,6 @@ class Slider extends React.Component {
 
 export default Slider;
 
-// container na pojedynczy slider
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -169,7 +176,9 @@ const Wrapper = styled.div`
     font-size: 2.4rem;
   }
   @media (min-width: 3840px) {
-    font-size: 4rem;
+    height: 40%;
+
+    font-size: 3.2rem;
   }
 `;
 
@@ -177,7 +186,7 @@ const Title = styled.p`
   text-align: center;
   background-color: #fa863f;
 `;
-// container na result i jednostkę
+
 const BoxResult = styled.div`
   position: relative;
   top: 30%;
@@ -199,7 +208,7 @@ const BoxResult = styled.div`
     height: 10%;
   }
 `;
-// jednostka slidera
+
 const Unit = styled.div`
   position: absolute;
 
@@ -221,11 +230,8 @@ const Unit = styled.div`
   @media (min-width: 1920px) {
     font-size: 1.6rem;
   }
-  @media (min-width: 3840px) {
-    font-size: 2.4rem;
-  }
 `;
-// aktualna wartosc slidera
+
 const Result = styled.input`
   width: 100%;
   height: 80%;
@@ -250,7 +256,7 @@ const Result = styled.input`
     font-size: 2.4rem;
   }
   @media (min-width: 3840px) {
-    font-size: 3.8rem;
+    font-size: 2.6rem;
   }
 `;
 
@@ -269,7 +275,7 @@ const MainBar = styled.div`
   display: flex;
   align-items: center;
   width: ${({ width }) => width}px;
-  height: 10%;
+  height: ${({ height }) => height}px;
   transform: translate(-50%, -50%);
   border-radius: 20px;
   box-shadow: 0 0 10px 5px #aaa;
@@ -279,13 +285,7 @@ const MainBar = styled.div`
   &:hover ${OpacityBar} {
     width: ${(props) => props.opacityWidth}px;
 
-    background-color: grey;
-  }
-  @media (min-width: 768px) {
-    height: 15%;
-  }
-  @media (min-width: 1920px) {
-    height: 10%;
+    background-color: #777;
   }
 `;
 
@@ -299,7 +299,7 @@ const ProgressBar = styled.div`
 
 const Draggable = styled.div`
   position: absolute;
-  top: -12.5%;
+  top: ${({ halfBarHeight }) => -halfBarHeight}px;
   left: ${(props) => props.position}px;
 
   display: flex;
@@ -319,21 +319,12 @@ const Draggable = styled.div`
   cursor: grab;
 
   @media (min-width: 768px) {
-    width: ${(props) => props.width + 20}px;
-    height: ${(props) => props.width + 20}px;
-
     font-size: 1.5rem;
   }
   @media (min-width: 1920px) {
-    width: ${(props) => props.width + 30}px;
-    height: ${(props) => props.width + 30}px;
-
     font-size: 1.8rem;
   }
   @media (min-width: 3840px) {
-    width: ${(props) => props.width + 90}px;
-    height: ${(props) => props.width + 90}px;
-
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 `;
