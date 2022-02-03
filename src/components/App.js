@@ -67,7 +67,20 @@ class App extends React.Component {
         </Panel>
 
         <InterestRatePanel>
-          <Label htmlFor='title'>Oprocentowanie</Label>
+          <Label htmlFor='title'>
+            Oprocentowanie
+            <CheckboxTemplate checked={isChecked}>
+              <InterestCheckbox
+                onChange={(e) => handleCheckbox(e)}
+                checked={isChecked}
+                type='checkbox'
+              />
+
+              <CheckboxLabel
+                className={isChecked ? 'isChecked' : 'isUnchecked'}
+              ></CheckboxLabel>
+            </CheckboxTemplate>
+          </Label>
 
           <InterestInput
             onChange={(e) => handleEdgeInterestRate(e)}
@@ -78,17 +91,6 @@ class App extends React.Component {
             value={isChecked && interest}
           />
           <UnitOfInterest checked={isChecked}>%</UnitOfInterest>
-          <CheckboxTemplate checked={isChecked}>
-            <InterestCheckbox
-              onChange={(e) => handleCheckbox(e)}
-              checked={isChecked}
-              type='checkbox'
-            />
-
-            <CheckboxLabel
-              className={isChecked ? 'isChecked' : 'isUnchecked'}
-            ></CheckboxLabel>
-          </CheckboxTemplate>
 
           {isChecked ? (
             <LoanInstallment>
@@ -144,8 +146,13 @@ const Panel = styled.div`
   border: 2px solid #fa863f;
   border-radius: 20px;
 
+  color: #444;
+
   font-family: 'Cormorant SC', serif;
 
+  @media (min-width: 768px) {
+    width: 60%;
+  }
   @media (min-width: 1366px) {
     width: 40%;
     height: 80%;
@@ -180,28 +187,33 @@ const InterestRatePanel = styled.div`
 
 const Label = styled.label`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  width: 80%;
-  height: 10%;
+  width: 90%;
+  height: 40px;
   border-radius: 20px;
   box-shadow: 0 0 10px 3px #777;
+
+  color: #444;
 
   font-size: 1rem;
   text-transform: uppercase;
 
   @media (min-width: 768px) {
-    font-size: 1.4rem;
+    width: 60%;
+    height: 60px;
+    font-size: 1.2rem;
   }
   @media (min-width: 1366px) {
-    width: 80%;
+    width: 70%;
     margin: 0 10%;
   }
   @media (min-width: 1920px) {
-    font-size: 2.2rem;
+    width: 80%;
+    font-size: 2rem;
   }
   @media (min-width: 3840px) {
-    font-size: 2.6rem;
+    padding-right: 10px;
   }
 `;
 
@@ -209,27 +221,16 @@ const CheckboxTemplate = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 15%;
-  height: 5%;
+  width: 40px;
+  height: 10px;
   border-radius: 5px;
 
   background: ${({ checked }) => (checked ? '#999' : '#444')};
-
-  @media (min-width: 768px) {
-    width: 10%;
-  }
-  @media (min-width: 1366px) {
-    height: 20px;
-  }
-  @media (min-width: 3840px) {
-    width: 20%;
-    height: 30px;
-  }
 `;
 
 const CheckboxLabel = styled.label`
   position: absolute;
-  left: -10%;
+  left: -10px;
 
   display: block;
   width: 20px;
@@ -258,9 +259,13 @@ const CheckboxLabel = styled.label`
     width: 30px;
     height: 30px;
   }
+  @media (min-width: 1366px) {
+    width: 25px;
+    height: 25px;
+  }
   @media (min-width: 3840px) {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
   }
 `;
 
@@ -275,7 +280,7 @@ const InterestCheckbox = styled.input`
   cursor: pointer;
 
   &:checked + label {
-    left: calc(110% - 20px);
+    left: calc(100% - 10px);
 
     transform: rotate(225deg);
     box-shadow: 0 0 5px 2px green;
@@ -284,21 +289,16 @@ const InterestCheckbox = styled.input`
   &:checked div {
     background-color: #444;
   }
-
-  @media (min-width: 3840px) {
-    &:checked + label {
-      left: calc(110% - 50px);
-    }
-  }
 `;
 
 const InterestInput = styled.input`
-  width: 10%;
-  height: 10%;
+  width: 50px;
+  height: 30px;
   border: none;
   box-shadow: 0 0 5px 2px #777;
-  border-radius: 20%;
+  border-radius: 5px;
 
+  font-size: 1rem;
   text-align: center;
 
   transition: 0.4s;
@@ -312,19 +312,14 @@ const InterestInput = styled.input`
     opacity: 0;
   }
   @media (min-width: 768px) {
-    font-size: 1.4rem;
-  }
-  @media (min-width: 1366px) {
-    height: 5%;
-    border-radius: 20px;
+    font-size: 1.2rem;
   }
   @media (min-width: 1920px) {
+    height: 50px;
     font-size: 1.9rem;
   }
   @media (min-width: 3840px) {
-    width: 15%;
-
-    font-size: 2.6rem;
+    font-size: 2.4rem;
   }
 `;
 
@@ -333,31 +328,25 @@ const UnitOfInterest = styled.div`
   opacity: ${({ checked }) => checked || 0};
   justify-content: center;
   align-items: center;
-  width: 15%;
-  height: 10%;
+  width: 50px;
+  height: 25px;
   box-shadow: 0 0 5px 2px #777;
-  border-radius: 20px;
+  border-radius: 5px;
   padding-bottom: 5px;
 
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 
   transition: 0.4s;
 
   @media (min-width: 768px) {
-    width: 10%;
-
-    font-size: 1.9rem;
-  }
-  @media (min-width: 1366px) {
-    height: 5%;
+    font-size: 1.8rem;
   }
   @media (min-width: 1920px) {
+    height: 45px;
     font-size: 2.3rem;
   }
   @media (min-width: 3840px) {
-    width: 15%;
-
-    font-size: 3.2rem;
+    font-size: 3rem;
   }
 `;
 
@@ -381,9 +370,6 @@ const LoanInstallment = styled.div`
     font-size: 1.9rem;
   }
   @media (min-width: 1366px) {
-    width: 60%;
-    height: 35%;
-
     font-size: 2.2rem;
   }
   @media (min-width: 1920px) {
@@ -391,6 +377,7 @@ const LoanInstallment = styled.div`
   }
   @media (min-width: 3840px) {
     width: 100%;
+    height: 50%;
 
     font-size: 4.5rem;
   }

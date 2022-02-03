@@ -7,13 +7,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const DRAGGABLE_WIDTH = 45;
-const SLIDER_WIDTH = 270;
-const SLIDER_HEIGHT = 20;
+const HALF_DRAGGABLE_WIDTH = 22.5;
 const START_POSITION = 0;
 
 const progressDrag = (width, mouseX, min, max) => {
   const step = (width - DRAGGABLE_WIDTH) / (max - min);
-  let newValue = Math.floor((mouseX - DRAGGABLE_WIDTH / 2) / step) + min;
+  let newValue = Math.floor((mouseX - HALF_DRAGGABLE_WIDTH) / step) + min;
 
   if (newValue < min) newValue = min;
   else if (newValue > max) newValue = max;
@@ -54,13 +53,13 @@ class Slider extends React.Component {
     } = this;
     const { left, width } = sliderRef.current.getBoundingClientRect();
     const mouseX = (e.clientX ?? e.touches[0].clientX) - left;
-    const positionMouse = mouseX - DRAGGABLE_WIDTH / 2;
+    const positionMouse = mouseX - HALF_DRAGGABLE_WIDTH;
 
     let newValue = progressDrag(width, mouseX, min, max);
 
     if (positionMouse < 0) {
       this.setState({ position: START_POSITION, value: min });
-    } else if (mouseX + DRAGGABLE_WIDTH / 2 > width) {
+    } else if (mouseX + HALF_DRAGGABLE_WIDTH > width) {
       this.setState({
         position: width - DRAGGABLE_WIDTH,
         value: max,
@@ -96,14 +95,16 @@ class Slider extends React.Component {
 
   handleChange = (e) => {
     const { min, max, handleLoan } = this.props;
+    const { width } = this.sliderRef.current.getBoundingClientRect();
     let value = Number(e.target.value);
 
     if (value > max) value = max;
     if (value < min) value = min;
+
+    const step = (width - DRAGGABLE_WIDTH) / (max - min + min);
     this.setState({
       value,
-      position:
-        (((value * 100) / max) * (SLIDER_WIDTH - DRAGGABLE_WIDTH)) / 100,
+      position: step * value,
     });
     handleLoan(value);
   };
@@ -119,23 +120,23 @@ class Slider extends React.Component {
       props: { title, handleLoan, min, max, sign },
     } = this;
 
+    const opacityWidth = opacityBarWidth - HALF_DRAGGABLE_WIDTH;
+    const positionProgressBar = position + HALF_DRAGGABLE_WIDTH;
+
     return (
       <Wrapper>
         <Title>{title}</Title>
         <MainBar
-          opacityWidth={opacityBarWidth - DRAGGABLE_WIDTH / 2}
-          width={SLIDER_WIDTH}
-          height={SLIDER_HEIGHT}
+          opacityWidth={opacityWidth}
           position={position}
           ref={sliderRef}
           onClick={(e) => handleClick(e)}
           onMouseMove={(e) => handleMouseMove(e)}
         >
-          <ProgressBar position={position + DRAGGABLE_WIDTH / 2} />
-          {isOpacityBar && <OpacityBar />}
+          <ProgressBar position={positionProgressBar} />
+          {isOpacityBar && <OpacityBar className='opacityBar' />}
           <Draggable
             width={DRAGGABLE_WIDTH}
-            halfBarHeight={SLIDER_HEIGHT / 2}
             position={position}
             onMouseDown={startDrag}
             onTouchStart={startDrag}
@@ -274,8 +275,8 @@ const MainBar = styled.div`
 
   display: flex;
   align-items: center;
-  width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
+  width: 270px;
+  height: 20px;
   transform: translate(-50%, -50%);
   border-radius: 20px;
   box-shadow: 0 0 10px 5px #aaa;
@@ -289,25 +290,32 @@ const MainBar = styled.div`
   }
 `;
 
-const ProgressBar = styled.div`
-  width: ${({ position }) => position}px;
+const ProgressBar = styled.div.attrs(({ position }) => ({
+  style: {
+    width: position,
+  },
+}))`
   height: 100%;
   border-radius: 20px;
 
   background: lightseagreen;
 `;
 
-const Draggable = styled.div`
+const Draggable = styled.div.attrs(({ position }) => ({
+  style: {
+    left: position,
+  },
+}))`
   position: absolute;
-  top: ${({ halfBarHeight }) => -halfBarHeight}px;
-  left: ${(props) => props.position}px;
+  top: 50%;
+  transform: translateY(-50%);
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.width}px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   box-shadow: 0 0 4px 0 #000;
 
