@@ -10,15 +10,19 @@ The application aims to calculate the loan amount. It is available on desktops a
 * styled components ver. 5.3.1
 * font awesome ver. 0.1.15
 
-In react an approach to class components is used.
-
 ## Launch
 
 https://szadziu.github.io/CreditCalculator
 
 ## Illustrations
 
-![image](https://user-images.githubusercontent.com/73105872/152673025-eaae4403-4137-4888-9092-24a84289dc4c.png)
+* Mobile
+
+![image](https://user-images.githubusercontent.com/73105872/184477791-ef68496f-94cb-49ea-9443-a0f8f9819c7f.png)
+
+* Desktop
+
+![image](https://user-images.githubusercontent.com/73105872/184477803-ead2d8e3-3201-44f0-9ab9-3f35a535370e.png)
 
 ## Scope of functionalities
 
