@@ -50,19 +50,19 @@ class Calculator extends React.Component {
             <P.MainWrapper>
                 <P.Panel>
                     <Slider
-                        sign={'MSC'}
-                        title={'Okres'}
-                        handleLoan={handleLoanPeriod}
-                        min={3}
-                        max={120}
-                    />
-
-                    <Slider
                         sign={'PLN'}
                         title={'Kwota'}
                         handleLoan={handleLoanAmount}
                         min={500}
                         max={100000}
+                    />
+
+                    <Slider
+                        sign={'MSC'}
+                        title={'Okres'}
+                        handleLoan={handleLoanPeriod}
+                        min={3}
+                        max={120}
                     />
                 </P.Panel>
 

@@ -38,7 +38,7 @@ export const Panel = styled.div`
     height: 50%;
 
     box-sizing: border-box;
-
+    padding-top: ${({ theme }) => theme.padding.xxl};
     padding-bottom: ${({ theme }) => theme.padding.xl};
     border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
 
@@ -69,6 +69,7 @@ export const InterestRatePanel = styled.div`
     max-width: 768px;
     min-height: 300px;
     height: 40%;
+    box-sizing: border-box;
 
     @media (min-width: 1366px) {
         height: 80%;
@@ -77,6 +78,7 @@ export const InterestRatePanel = styled.div`
 
     @media (min-width: 1600px) {
         border-top: 1px solid ${({ theme }) => theme.colors.primary};
+        border-bottom: 1px solid ${({ theme }) => theme.colors.primary};
     }
 `;
 
