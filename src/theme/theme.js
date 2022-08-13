@@ -6,8 +6,9 @@ export const theme = {
         accent_1: '#777',
         accent_2: 'lightseagreen',
         white: '#fff',
-        success: 'green',
-        error: 'red',
+        black: '#000',
+        enabled: 'green',
+        disabled: 'red',
     },
 
     fontSize: {
