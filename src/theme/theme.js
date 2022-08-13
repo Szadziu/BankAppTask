@@ -4,11 +4,11 @@ export const theme = {
         primary: '#fa863f',
         secondary: '#444',
         accent_1: '#777',
-        accent_2: 'lightseagreen',
+        accent_2: '#5D7EE3',
         white: '#fff',
         black: '#000',
-        enabled: 'green',
-        disabled: 'red',
+        enabled: '#67FCD1',
+        disabled: '#E66147',
     },
 
     fontSize: {
