@@ -35,7 +35,7 @@ export const Panel = styled.div`
     width: 100%;
     max-width: 768px;
     min-height: 300px;
-    height: 50%;
+    height: 60%;
 
     box-sizing: border-box;
     padding-top: ${({ theme }) => theme.padding.xxl};
@@ -68,7 +68,7 @@ export const InterestRatePanel = styled.div`
     width: 100%;
     max-width: 768px;
     min-height: 300px;
-    height: 40%;
+    height: 30%;
     box-sizing: border-box;
 
     @media (min-width: 1366px) {
@@ -223,7 +223,7 @@ export const LoanInstallment = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100px;
+    min-height: 80px;
     height: 60%;
     margin-bottom: ${({ theme }) => theme.margin.xl};
     padding: ${({ theme }) => theme.padding.s} ${({ theme }) => theme.padding.l};
