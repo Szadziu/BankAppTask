@@ -33,7 +33,7 @@ export const theme = {
         m: '10px',
         l: '15px',
         xl: '20px',
-        xxl: '35px',
+        xxl: '30px',
     },
 
     margin: {
